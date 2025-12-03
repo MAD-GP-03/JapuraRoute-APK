@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -71,106 +70,66 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                 modifier = Modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp)
+                    .padding(horizontal = 12.dp)
                     .padding(top = 20.dp)
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
 
-            // Header with Shield Logo and Title
+            // Header with Small Logo and "FoTGo" Title
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-                horizontalArrangement = Arrangement.Center,
+                    .padding(vertical = 16.dp, horizontal = 8.dp),
+                horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Shield Logo with golden glowing outline
+                // Small Logo with golden glowing outline
                 Box(
                     modifier = Modifier
-                        .size(56.dp)
+                        .size(42.dp)
                         .border(
-                            width = 2.dp,
+                            width = 1.5.dp,
                             color = Color(0xFFD4AF37),
-                            shape = RoundedCornerShape(12.dp)
+                            shape = RoundedCornerShape(10.dp)
                         )
                         .background(
                             color = Color.Transparent,
-                            shape = RoundedCornerShape(12.dp)
+                            shape = RoundedCornerShape(10.dp)
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "F",
-                        fontSize = 32.sp,
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFD4AF37)
                     )
                 }
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "Faculty Super App",
+                    text = "FoTGo",
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color.White,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 22.sp
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 26.sp
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // Glassmorphic Welcome Card with golden glowing border
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp)
-                    .border(
-                        width = 1.dp,
-                        color = Color(0x80D4AF37),
-                        shape = RoundedCornerShape(32.dp)
-                    )
-                    .background(
-                        color = Color(0x40000000),
-                        shape = RoundedCornerShape(32.dp)
-                    )
-                    .padding(20.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Welcome back!",
-                            color = Color.White,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "Check your updated Class Schedule.",
-                            color = Color(0xFFAAAAAA),
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Normal
-                        )
-                    }
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = null,
-                        tint = Color(0xFFAAAAAA),
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
+            // Image Carousel for Upcoming Events
+            UpcomingEventsCarousel()
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Main Feature Cards Grid - Liquid Glass Design
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // Row 1: Campus Map (dark red-brown) & Auditorium Booking (gray light)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     LiquidGlassCard(
                         modifier = Modifier.weight(1f),
@@ -202,7 +161,7 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                 // Row 2: Events (yellow-orange) & Places & Services (sky-blue)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     LiquidGlassCard(
                         modifier = Modifier.weight(1f),
@@ -233,7 +192,7 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                 // Row 3: GPA Calculator (zinc dark) & Class Schedule (zinc-black)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     LiquidGlassCard(
                         modifier = Modifier.weight(1f),
@@ -393,7 +352,7 @@ fun LiquidGlassCard(
                         // Icon with glassmorphic background and golden glow when emphasized
                         Box(
                             modifier = Modifier
-                                .size(48.dp),
+                                .size(56.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             // If emphasized, tint the icon with glowColor slightly; otherwise use textColor
@@ -401,7 +360,7 @@ fun LiquidGlassCard(
                                 imageVector = icon,
                                 contentDescription = title,
                                 tint = if (isEmphasized) glowColor.copy(alpha = 0.95f) else textColor.copy(alpha = 0.92f),
-                                modifier = Modifier.size(26.dp)
+                                modifier = Modifier.size(32.dp)
                             )
                         }
                     }
@@ -504,7 +463,7 @@ fun SmallLiquidGlassCard(
                     // Icon with glassmorphic background
                     Box(
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(48.dp)
                             .background(
                                 color = Color(0x20FFFFFF),
                                 shape = RoundedCornerShape(12.dp)
@@ -515,7 +474,7 @@ fun SmallLiquidGlassCard(
                             imageVector = icon,
                             contentDescription = title,
                             tint = textColor.copy(alpha = 0.9f),
-                            modifier = Modifier.size(22.dp)
+                            modifier = Modifier.size(30.dp)
                         )
                     }
                 }
@@ -549,22 +508,129 @@ fun SmallLiquidGlassCard(
     }
 }
 
+// Upcoming Events Carousel
+@Composable
+fun UpcomingEventsCarousel() {
+    // Single featured event - full width
+    val eventName = "Tech Conference 2024"
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        EventImageCard(
+            eventName = eventName,
+            index = 0
+        )
+    }
+}
+
+@Composable
+fun EventImageCard(
+    eventName: String,
+    index: Int
+) {
+    val glowColor = Color(0xFFFFE8A3)
+
+    // Different gradient colors for each card
+    val gradientColors = when (index % 4) {
+        0 -> listOf(Color(0xFF6366F1), Color(0xFF8B5CF6)) // Purple to Violet
+        1 -> listOf(Color(0xFFEC4899), Color(0xFFF59E0B)) // Pink to Orange
+        2 -> listOf(Color(0xFF10B981), Color(0xFF3B82F6)) // Green to Blue
+        else -> listOf(Color(0xFFF59E0B), Color(0xFFEF4444)) // Orange to Red
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(180.dp)
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        glowColor.copy(alpha = 0.12f),
+                        glowColor.copy(alpha = 0.06f)
+                    )
+                ),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .padding(1.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = gradientColors.map { it.copy(alpha = 0.85f) }
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .border(
+                    width = 0.5.dp,
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            glowColor.copy(alpha = 0.25f),
+                            glowColor.copy(alpha = 0.12f)
+                        )
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            // Placeholder for actual image
+            val bgPainter: Painter = painterResource(id = R.drawable.gemini_generated_image_hxfk22hxfk22hxfk)
+            Image(
+                painter = bgPainter,
+                contentDescription = eventName,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(16.dp))
+            )
+
+            // Gradient overlay for text readability
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.7f)
+                            )
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+            )
+
+            // Text overlay at bottom
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Text(
+                    text = eventName,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    lineHeight = 20.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Dec 15, 2024 • 10:00 AM",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.White.copy(alpha = 0.85f)
+                )
+            }
+        }
+    }
+}
+
 @Composable
 fun BottomNavigationBar() {
 
-    val outerGlowBrush = Brush.horizontalGradient(
-        colors = listOf(
-            Color(0xFFF7EBAF), // Left golden glow
-            Color(0xFFE8A565)  // Right orange glow
-        )
-    )
-
-    val innerBackgroundBrush = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFF232428), // Inner gradient top
-            Color(0xFF18191C)  // Inner gradient bottom
-        )
-    )
+    val glowColor = Color(0xFFFFE8A3) // Golden glow similar to cards
 
     Box(
         modifier = Modifier
@@ -572,12 +638,32 @@ fun BottomNavigationBar() {
             .height(70.dp)
             .padding(horizontal = 16.dp)
             .background(
-                brush = outerGlowBrush,
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        glowColor.copy(alpha = 0.35f),
+                        glowColor.copy(alpha = 0.25f)
+                    )
+                ),
                 shape = RoundedCornerShape(35.dp)
             )
             .padding(1.5.dp) // Glow border thickness
             .background(
-                brush = innerBackgroundBrush,
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF1A1A1A).copy(alpha = 0.85f), // Much more opaque dark background
+                        Color(0xFF0D0D0D).copy(alpha = 0.90f)
+                    )
+                ),
+                shape = RoundedCornerShape(35.dp)
+            )
+            .border(
+                width = 1.dp,
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        glowColor.copy(alpha = 0.45f),
+                        glowColor.copy(alpha = 0.35f)
+                    )
+                ),
                 shape = RoundedCornerShape(35.dp)
             )
     ) {
