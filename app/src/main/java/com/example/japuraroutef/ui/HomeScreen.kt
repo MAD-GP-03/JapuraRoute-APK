@@ -162,7 +162,7 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                 }
             }
 
-            // Main Feature Cards Grid - Exact layout from reference
+            // Main Feature Cards Grid - Professional Glassmorphism Design
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -171,36 +171,24 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    FeatureCard(
+                    ModernGlassCard(
                         modifier = Modifier.weight(1f),
                         title = "Campus\nMap",
                         buttonText = "View",
                         icon = Icons.Default.LocationOn,
-                        gradient = Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFF6B2D1D),
-                                Color(0xFF8B4513),
-                                Color(0xFFD4A574)
-                            )
-                        ),
+                        glassColor = Color(0x40667EEA), // Modern blue glass
+                        iconTint = Color(0xFF667EEA),
                         textColor = Color.White,
-                        iconTint = Color(0xFFD4AF37),
                         onClick = onNavigateToMap
                     )
-                    FeatureCard(
+                    ModernGlassCard(
                         modifier = Modifier.weight(1f),
                         title = "Auditorium\nBooking",
                         buttonText = "Book",
                         icon = Icons.Default.DateRange,
-                        gradient = Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFFD8D8D8),
-                                Color(0xFFE8E8E8),
-                                Color(0xFFCDB891)
-                            )
-                        ),
-                        textColor = Color.Black,
-                        iconTint = Color(0xFF5D4037),
+                        glassColor = Color(0x40F093FB), // Modern pink glass
+                        iconTint = Color(0xFFF093FB),
+                        textColor = Color.White,
                         onClick = { /* TODO */ }
                     )
                 }
@@ -210,36 +198,24 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    FeatureCard(
+                    ModernGlassCard(
                         modifier = Modifier.weight(1f),
                         title = "Events",
                         buttonText = "View",
                         icon = Icons.Default.Notifications,
-                        gradient = Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFFFFEB3B),
-                                Color(0xFFFDD835),
-                                Color(0xFFFBC02D)
-                            )
-                        ),
-                        textColor = Color.Black,
-                        iconTint = Color(0xFF424242),
+                        glassColor = Color(0x404FACFE), // Modern cyan glass
+                        iconTint = Color(0xFF4FACFE),
+                        textColor = Color.White,
                         onClick = { /* TODO */ }
                     )
-                    FeatureCard(
+                    ModernGlassCard(
                         modifier = Modifier.weight(1f),
                         title = "Places &\nServices",
                         buttonText = "View",
                         icon = Icons.Default.Place,
-                        gradient = Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFF64B5F6),
-                                Color(0xFF90CAF9),
-                                Color(0xFFBBDEFB)
-                            )
-                        ),
-                        textColor = Color.Black,
-                        iconTint = Color(0xFF1976D2),
+                        glassColor = Color(0x4043E97B), // Modern green glass
+                        iconTint = Color(0xFF43E97B),
+                        textColor = Color.White,
                         onClick = { /* TODO */ }
                     )
                 }
@@ -249,36 +225,24 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    FeatureCard(
+                    ModernGlassCard(
                         modifier = Modifier.weight(1f),
                         title = "GPA\nCalculator",
-                        buttonText = "View",
+                        buttonText = "Calculate",
                         icon = Icons.Default.AccountBox,
-                        gradient = Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFF6D5043),
-                                Color(0xFF8D6E63),
-                                Color(0xFF9E8275)
-                            )
-                        ),
+                        glassColor = Color(0x40FA709A), // Modern coral glass
+                        iconTint = Color(0xFFFA709A),
                         textColor = Color.White,
-                        iconTint = Color(0xFFD4AF37),
                         onClick = { /* TODO */ }
                     )
-                    FeatureCard(
+                    ModernGlassCard(
                         modifier = Modifier.weight(1f),
                         title = "Class\nSchedule",
                         buttonText = "View",
                         icon = Icons.Default.Info,
-                        gradient = Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFF1A1A1A),
-                                Color(0xFF2A2A2A),
-                                Color(0xFF212121)
-                            )
-                        ),
+                        glassColor = Color(0x40FEE140), // Modern yellow glass
+                        iconTint = Color(0xFFFEE140),
                         textColor = Color.White,
-                        iconTint = Color(0xFFD4AF37),
                         onClick = { /* TODO */ }
                     )
                 }
@@ -288,31 +252,34 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    SmallFeatureCard(
+                    SmallModernGlassCard(
                         modifier = Modifier.weight(1f),
                         title = "Notices",
                         buttonText = "Access",
                         icon = Icons.Default.Warning,
-                        backgroundColor = Color(0xFFFFCC80),
-                        textColor = Color.Black,
+                        glassColor = Color(0x40FD1D1D), // Modern red glass
+                        iconTint = Color(0xFFFD1D1D),
+                        textColor = Color.White,
                         onClick = { /* TODO */ }
                     )
-                    SmallFeatureCard(
+                    SmallModernGlassCard(
                         modifier = Modifier.weight(1f),
                         title = "Transport\nInfo",
                         buttonText = "Access",
                         icon = Icons.Default.Call,
-                        backgroundColor = Color(0xFF2196F3),
+                        glassColor = Color(0x408E54E9), // Modern purple glass
+                        iconTint = Color(0xFF8E54E9),
                         textColor = Color.White,
                         onClick = { /* TODO */ }
                     )
-                    SmallFeatureCard(
+                    SmallModernGlassCard(
                         modifier = Modifier.weight(1f),
                         title = "Study\nResources",
                         buttonText = "Access",
                         icon = Icons.Default.Email,
-                        backgroundColor = Color(0xFFB39DDB),
-                        textColor = Color.Black,
+                        glassColor = Color(0x4000D2FF), // Modern sky blue glass
+                        iconTint = Color(0xFF00D2FF),
+                        textColor = Color.White,
                         onClick = { /* TODO */ }
                     )
                 }
@@ -334,42 +301,55 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
     }
 }
 
-// Feature Card Component with glassmorphic styling
+// Modern Glassmorphic Card Component - Professional & Clean
 @Composable
-fun FeatureCard(
+fun ModernGlassCard(
     modifier: Modifier = Modifier,
     title: String,
     buttonText: String,
     icon: ImageVector,
-    gradient: Brush,
+    glassColor: Color,
+    iconTint: Color,
     textColor: Color = Color.White,
-    iconTint: Color = Color.White,
     onClick: () -> Unit
 ) {
     Card(
         onClick = onClick,
         modifier = modifier.height(180.dp),
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(0.dp)
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp,
+            pressedElevation = 12.dp
+        )
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(gradient)
+                .background(
+                    color = glassColor,
+                    shape = RoundedCornerShape(28.dp)
+                )
+                .border(
+                    width = 1.dp,
+                    color = Color.White.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(28.dp)
+                )
         ) {
-            // Glassmorphic overlay with transparency
+            // Top light reflection for glass effect
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .align(Alignment.TopCenter)
                     .background(
-                        Brush.verticalGradient(
+                        brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = 0.15f),
-                                Color.Transparent,
-                                Color.Black.copy(alpha = 0.2f)
+                                Color.White.copy(alpha = 0.2f),
+                                Color.Transparent
                             )
-                        )
+                        ),
+                        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
                     )
             )
 
@@ -387,38 +367,55 @@ fun FeatureCard(
                     Text(
                         text = title,
                         fontSize = 19.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = FontWeight.Bold,
                         color = textColor,
-                        lineHeight = 23.sp
+                        lineHeight = 24.sp
                     )
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = title,
-                        tint = iconTint,
-                        modifier = Modifier.size(30.dp)
-                    )
+
+                    // Icon container with subtle glass effect
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(
+                                color = Color.White.copy(alpha = 0.15f),
+                                shape = RoundedCornerShape(14.dp)
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = Color.White.copy(alpha = 0.3f),
+                                shape = RoundedCornerShape(14.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = title,
+                            tint = iconTint,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
                 }
 
-                // Button with border
+                // Glass button
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(44.dp)
-                        .border(
-                            width = 1.5.dp,
-                            color = textColor.copy(alpha = 0.5f),
-                            shape = RoundedCornerShape(22.dp)
-                        )
+                        .height(46.dp)
                         .background(
                             color = Color.White.copy(alpha = 0.2f),
-                            shape = RoundedCornerShape(22.dp)
+                            shape = RoundedCornerShape(23.dp)
                         )
-                        .clip(RoundedCornerShape(22.dp)),
+                        .border(
+                            width = 1.dp,
+                            color = Color.White.copy(alpha = 0.4f),
+                            shape = RoundedCornerShape(23.dp)
+                        )
+                        .clip(RoundedCornerShape(23.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = buttonText,
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.Bold,
                         fontSize = 15.sp,
                         color = textColor
                     )
@@ -428,41 +425,55 @@ fun FeatureCard(
     }
 }
 
-// Small Feature Card for 3-column layout
+// Small Modern Glassmorphic Card
 @Composable
-fun SmallFeatureCard(
+fun SmallModernGlassCard(
     modifier: Modifier = Modifier,
     title: String,
     buttonText: String,
     icon: ImageVector,
-    backgroundColor: Color,
-    textColor: Color = Color.Black,
+    glassColor: Color,
+    iconTint: Color,
+    textColor: Color = Color.White,
     onClick: () -> Unit
 ) {
     Card(
         onClick = onClick,
         modifier = modifier.height(180.dp),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(0.dp)
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp,
+            pressedElevation = 12.dp
+        )
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgroundColor)
+                .background(
+                    color = glassColor,
+                    shape = RoundedCornerShape(24.dp)
+                )
+                .border(
+                    width = 1.dp,
+                    color = Color.White.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(24.dp)
+                )
         ) {
-            // Subtle glassmorphic overlay
+            // Top light reflection
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .align(Alignment.TopCenter)
                     .background(
-                        Brush.verticalGradient(
+                        brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = 0.1f),
-                                Color.Transparent,
-                                Color.Black.copy(alpha = 0.1f)
+                                Color.White.copy(alpha = 0.2f),
+                                Color.Transparent
                             )
-                        )
+                        ),
+                        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                     )
             )
 
@@ -480,38 +491,55 @@ fun SmallFeatureCard(
                     Text(
                         text = title,
                         fontSize = 15.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = FontWeight.Bold,
                         color = textColor,
                         lineHeight = 19.sp
                     )
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = title,
-                        tint = textColor,
-                        modifier = Modifier.size(26.dp)
-                    )
+
+                    // Icon container
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                color = Color.White.copy(alpha = 0.15f),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = Color.White.copy(alpha = 0.3f),
+                                shape = RoundedCornerShape(12.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = title,
+                            tint = iconTint,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
                 }
 
-                // Button with border
+                // Glass button
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(40.dp)
-                        .border(
-                            width = 1.5.dp,
-                            color = textColor.copy(alpha = 0.4f),
-                            shape = RoundedCornerShape(20.dp)
-                        )
+                        .height(42.dp)
                         .background(
-                            color = Color.White.copy(alpha = 0.25f),
-                            shape = RoundedCornerShape(20.dp)
+                            color = Color.White.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(21.dp)
                         )
-                        .clip(RoundedCornerShape(20.dp)),
+                        .border(
+                            width = 1.dp,
+                            color = Color.White.copy(alpha = 0.4f),
+                            shape = RoundedCornerShape(21.dp)
+                        )
+                        .clip(RoundedCornerShape(21.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = buttonText,
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.Bold,
                         fontSize = 13.sp,
                         color = textColor
                     )
