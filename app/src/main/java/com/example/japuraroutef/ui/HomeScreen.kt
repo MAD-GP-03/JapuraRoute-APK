@@ -166,7 +166,7 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Row 1: Campus Map (emphasized with color) & Auditorium Booking
+                // Row 1: Campus Map (dark red-brown) & Auditorium Booking (gray light)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -177,7 +177,7 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                         buttonText = "View",
                         icon = Icons.Default.LocationOn,
                         isEmphasized = true,
-                        tintColor = Color(0xFF007AFF), // iOS blue for emphasis
+                        tintColor = Color(0xFF3F1F1F), // Dark red-brown (zinc-800 to red-950)
                         onClick = onNavigateToMap
                     )
                     LiquidGlassCard(
@@ -185,12 +185,13 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                         title = "Auditorium\nBooking",
                         buttonText = "Book",
                         icon = Icons.Default.DateRange,
-                        isEmphasized = false,
+                        isEmphasized = true,
+                        tintColor = Color(0xFFD1D5DB), // Light gray (gray-300)
                         onClick = { /* TODO */ }
                     )
                 }
 
-                // Row 2: Events & Places & Services
+                // Row 2: Events (yellow-orange) & Places & Services (sky-blue)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -200,7 +201,8 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                         title = "Events",
                         buttonText = "View",
                         icon = Icons.Default.Notifications,
-                        isEmphasized = false,
+                        isEmphasized = true,
+                        tintColor = Color(0xFFFCD34D), // Yellow-300 (yellow-200 to orange-400)
                         onClick = { /* TODO */ }
                     )
                     LiquidGlassCard(
@@ -208,12 +210,13 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                         title = "Places &\nServices",
                         buttonText = "View",
                         icon = Icons.Default.Place,
-                        isEmphasized = false,
+                        isEmphasized = true,
+                        tintColor = Color(0xFF7DD3FC), // Sky-300 (sky-200 to blue-400)
                         onClick = { /* TODO */ }
                     )
                 }
 
-                // Row 3: GPA Calculator & Class Schedule
+                // Row 3: GPA Calculator (zinc dark) & Class Schedule (zinc-black)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -224,7 +227,7 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                         buttonText = "Calculate",
                         icon = Icons.Default.AccountBox,
                         isEmphasized = true,
-                        tintColor = Color(0xFF34C759), // iOS green for emphasis
+                        tintColor = Color(0xFF27272A), // Zinc-800 (dark gray)
                         onClick = { /* TODO */ }
                     )
                     LiquidGlassCard(
@@ -232,12 +235,13 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                         title = "Class\nSchedule",
                         buttonText = "View",
                         icon = Icons.Default.Info,
-                        isEmphasized = false,
+                        isEmphasized = true,
+                        tintColor = Color(0xFF18181B), // Zinc-900 (very dark gray)
                         onClick = { /* TODO */ }
                     )
                 }
 
-                // Row 4: Notices, Transport Info & Study Resources (3 small cards)
+                // Row 4: Notices (orange), Transport Info (sky-blue) & Study Resources (purple-indigo)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -248,7 +252,7 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                         buttonText = "Access",
                         icon = Icons.Default.Warning,
                         isEmphasized = true,
-                        tintColor = Color(0xFFFF3B30), // iOS red for status indicator
+                        tintColor = Color(0xFFFED7AA), // Orange-200
                         onClick = { /* TODO */ }
                     )
                     SmallLiquidGlassCard(
@@ -256,7 +260,8 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                         title = "Transport\nInfo",
                         buttonText = "Access",
                         icon = Icons.Default.Call,
-                        isEmphasized = false,
+                        isEmphasized = true,
+                        tintColor = Color(0xFF0EA5E9), // Sky-500 (sky-400 to blue-600)
                         onClick = { /* TODO */ }
                     )
                     SmallLiquidGlassCard(
@@ -264,7 +269,8 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
                         title = "Study\nResources",
                         buttonText = "Access",
                         icon = Icons.Default.Email,
-                        isEmphasized = false,
+                        isEmphasized = true,
+                        tintColor = Color(0xFFC4B5FD), // Purple-300 (purple-300 to indigo-400)
                         onClick = { /* TODO */ }
                     )
                 }
@@ -286,8 +292,7 @@ fun HomeScreen(onNavigateToMap: () -> Unit) {
     }
 }
 
-// Liquid Glass Card - Apple Design Principles
-// Larger elements are more opaque for legibility, color used sparingly for emphasis
+// Liquid Glass Card with Gradient Colors
 @Composable
 fun LiquidGlassCard(
     modifier: Modifier = Modifier,
@@ -298,6 +303,17 @@ fun LiquidGlassCard(
     tintColor: Color = Color(0xFF007AFF),
     onClick: () -> Unit
 ) {
+    // Determine text color based on background
+    val textColor = when (tintColor) {
+        Color(0xFFD1D5DB) -> Color(0xFF1F2937) // Dark text for light gray background
+        else -> Color.White
+    }
+
+    val iconBgColor = when (tintColor) {
+        Color(0xFFD1D5DB) -> Color(0x20000000) // Dark semi-transparent for light bg
+        else -> Color(0x20FFFFFF) // Light semi-transparent for dark bg
+    }
+
     Card(
         onClick = onClick,
         modifier = modifier.height(180.dp),
@@ -312,20 +328,20 @@ fun LiquidGlassCard(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    // More opaque for larger elements (sidebar-like)
-                    color = if (isEmphasized)
-                        tintColor.copy(alpha = 0.18f)
-                    else
-                        Color.White.copy(alpha = 0.12f),
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            tintColor.copy(alpha = 0.7f),
+                            tintColor.copy(alpha = 0.5f)
+                        )
+                    ),
                     shape = RoundedCornerShape(28.dp)
                 )
                 .border(
-                    width = 0.5.dp,
-                    color = Color.White.copy(alpha = 0.18f),
+                    width = 1.dp,
+                    color = tintColor.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(28.dp)
                 )
         ) {
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -341,17 +357,16 @@ fun LiquidGlassCard(
                         text = title,
                         fontSize = 19.sp,
                         fontWeight = FontWeight.Bold,
-                        // Monochromatic - lighter text on dark background
-                        color = Color.White.copy(alpha = 0.95f),
+                        color = textColor,
                         lineHeight = 24.sp
                     )
 
-                    // Icon with minimal styling
+                    // Icon with glassmorphic background
                     Box(
                         modifier = Modifier
                             .size(48.dp)
                             .background(
-                                color = Color.White.copy(alpha = 0.08f),
+                                color = iconBgColor,
                                 shape = RoundedCornerShape(14.dp)
                             ),
                         contentAlignment = Alignment.Center
@@ -359,32 +374,30 @@ fun LiquidGlassCard(
                         Icon(
                             imageVector = icon,
                             contentDescription = title,
-                            // Color only for emphasized elements
-                            tint = if (isEmphasized) tintColor else Color.White.copy(alpha = 0.7f),
+                            tint = textColor.copy(alpha = 0.9f),
                             modifier = Modifier.size(26.dp)
                         )
                     }
                 }
 
-                // Button - emphasized with tint only when needed
+                // Glassmorphic Button
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(46.dp)
                         .background(
-                            // Color tint only for key actions
-                            color = if (isEmphasized)
-                                tintColor.copy(alpha = 0.25f)
-                            else
-                                Color.White.copy(alpha = 0.12f),
+                            color = when (tintColor) {
+                                Color(0xFFD1D5DB) -> Color(0x40000000)
+                                else -> Color(0x30FFFFFF)
+                            },
                             shape = RoundedCornerShape(23.dp)
                         )
                         .border(
-                            width = 0.5.dp,
-                            color = if (isEmphasized)
-                                tintColor.copy(alpha = 0.4f)
-                            else
-                                Color.White.copy(alpha = 0.25f),
+                            width = 1.dp,
+                            color = when (tintColor) {
+                                Color(0xFFD1D5DB) -> Color(0x40000000)
+                                else -> Color(0x40FFFFFF)
+                            },
                             shape = RoundedCornerShape(23.dp)
                         )
                         .clip(RoundedCornerShape(23.dp)),
@@ -394,7 +407,7 @@ fun LiquidGlassCard(
                         text = buttonText,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 15.sp,
-                        color = if (isEmphasized) tintColor else Color.White.copy(alpha = 0.9f)
+                        color = textColor.copy(alpha = 0.9f)
                     )
                 }
             }
@@ -402,8 +415,7 @@ fun LiquidGlassCard(
     }
 }
 
-// Small Liquid Glass Card - Toolbar/Tab Bar Style
-// Smaller elements adapt between light/dark appearance, monochromatic scheme
+// Small Liquid Glass Card with Gradient Colors
 @Composable
 fun SmallLiquidGlassCard(
     modifier: Modifier = Modifier,
@@ -414,6 +426,9 @@ fun SmallLiquidGlassCard(
     tintColor: Color = Color(0xFF007AFF),
     onClick: () -> Unit
 ) {
+    // Determine text color based on background - all small cards use white text
+    val textColor = Color.White
+
     Card(
         onClick = onClick,
         modifier = modifier.height(180.dp),
@@ -428,20 +443,20 @@ fun SmallLiquidGlassCard(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    // Less opaque for smaller toolbar-like elements
-                    color = if (isEmphasized)
-                        tintColor.copy(alpha = 0.15f)
-                    else
-                        Color.White.copy(alpha = 0.10f),
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            tintColor.copy(alpha = 0.75f),
+                            tintColor.copy(alpha = 0.6f)
+                        )
+                    ),
                     shape = RoundedCornerShape(24.dp)
                 )
                 .border(
-                    width = 0.5.dp,
-                    color = Color.White.copy(alpha = 0.15f),
+                    width = 1.dp,
+                    color = tintColor.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(24.dp)
                 )
         ) {
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -457,17 +472,16 @@ fun SmallLiquidGlassCard(
                         text = title,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
-                        // Monochromatic - lighter on dark
-                        color = Color.White.copy(alpha = 0.95f),
+                        color = textColor,
                         lineHeight = 19.sp
                     )
 
-                    // Minimal icon styling
+                    // Icon with glassmorphic background
                     Box(
                         modifier = Modifier
                             .size(40.dp)
                             .background(
-                                color = Color.White.copy(alpha = 0.06f),
+                                color = Color(0x20FFFFFF),
                                 shape = RoundedCornerShape(12.dp)
                             ),
                         contentAlignment = Alignment.Center
@@ -475,31 +489,24 @@ fun SmallLiquidGlassCard(
                         Icon(
                             imageVector = icon,
                             contentDescription = title,
-                            // Color only for status indicators
-                            tint = if (isEmphasized) tintColor else Color.White.copy(alpha = 0.7f),
+                            tint = textColor.copy(alpha = 0.9f),
                             modifier = Modifier.size(22.dp)
                         )
                     }
                 }
 
-                // Button with minimal tinting
+                // Glassmorphic Button
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(42.dp)
                         .background(
-                            color = if (isEmphasized)
-                                tintColor.copy(alpha = 0.22f)
-                            else
-                                Color.White.copy(alpha = 0.10f),
+                            color = Color(0x30FFFFFF),
                             shape = RoundedCornerShape(21.dp)
                         )
                         .border(
-                            width = 0.5.dp,
-                            color = if (isEmphasized)
-                                tintColor.copy(alpha = 0.35f)
-                            else
-                                Color.White.copy(alpha = 0.22f),
+                            width = 1.dp,
+                            color = Color(0x40FFFFFF),
                             shape = RoundedCornerShape(21.dp)
                         )
                         .clip(RoundedCornerShape(21.dp)),
@@ -509,7 +516,7 @@ fun SmallLiquidGlassCard(
                         text = buttonText,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp,
-                        color = if (isEmphasized) tintColor else Color.White.copy(alpha = 0.9f)
+                        color = textColor.copy(alpha = 0.9f)
                     )
                 }
             }
