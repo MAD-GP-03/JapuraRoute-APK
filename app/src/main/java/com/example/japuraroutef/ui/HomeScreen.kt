@@ -1,719 +1,430 @@
 package com.example.japuraroutef.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.ui.draw.clip
 import com.example.japuraroutef.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onNavigateToMap: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-    ) {
-        // Background image with blur for liquid glass effect
-        val bgPainter: Painter = painterResource(id = R.drawable.gemini_generated_image_hxfk22hxfk22hxfk)
-        Image(
-            painter = bgPainter,
-            contentDescription = "Home Background",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .blur(radius = 70.dp)
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToMap: () -> Unit = {},
+    onNavigateToGrades: () -> Unit = {},
+    onNavigateToSchedule: () -> Unit = {}
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    val tiles = remember {
+        listOf(
+            HomeActionTile(
+                title = "Class Schedule",
+                icon = Icons.Default.EventNote,
+                background = Color(0xFF4A4458), // secondary-container-dark
+                textColor = Color(0xFFE8DEF8), // on-secondary-container-dark
+                iconTint = Color(0xFFE8DEF8),
+                iconBackground = Color(0xFF36343B), // surface-container-highest-dark
+                span = 2,
+                onClick = onNavigateToSchedule
+            ),
+            HomeActionTile(
+                title = "Grades",
+                icon = Icons.Default.Leaderboard,
+                background = Color(0xFF211F26), // surface-container-dark
+                textColor = Color(0xFFE6E1E9), // on-surface-dark
+                iconTint = Color(0xFFCAC4D0), // on-surface-variant-dark
+                iconBackground = Color(0xFF36343B), // surface-container-highest-dark
+                borderColor = Color(0xFF938F99), // outline-dark
+                onClick = onNavigateToGrades
+            ),
+            HomeActionTile(
+                title = "Campus Map",
+                icon = Icons.Default.LocationOn,
+                background = Color(0xFF2B2930), // surface-container-high-dark
+                textColor = Color(0xFFE6E1E9), // on-surface-dark
+                iconTint = Color(0xFFD1BCFF), // primary
+                iconBackground = Color.Transparent,
+                onClick = onNavigateToMap
+            ),
+            HomeActionTile(
+                title = "Events",
+                icon = Icons.Default.Celebration,
+                background = Color(0xFF2B2930),
+                textColor = Color(0xFFE6E1E9),
+                iconTint = Color(0xFFD1BCFF),
+                iconBackground = Color.Transparent
+            ),
+            HomeActionTile(
+                title = "Notices",
+                icon = Icons.Default.Notifications,
+                background = Color(0xFF2B2930),
+                textColor = Color(0xFFE6E1E9),
+                iconTint = Color(0xFFD1BCFF),
+                iconBackground = Color.Transparent
+            ),
+            HomeActionTile(
+                title = "Booking",
+                icon = Icons.Default.Book,
+                background = Color(0xFF2B2930),
+                textColor = Color(0xFFE6E1E9),
+                iconTint = Color(0xFFD1BCFF),
+                iconBackground = Color.Transparent
+            ),
+            HomeActionTile(
+                title = "Transport",
+                icon = Icons.Default.DirectionsBus,
+                background = Color(0xFF2B2930),
+                textColor = Color(0xFFE6E1E9),
+                iconTint = Color(0xFFD1BCFF),
+                iconBackground = Color.Transparent
+            ),
+            HomeActionTile(
+                title = "Services",
+                icon = Icons.Default.Build,
+                background = Color(0xFF2B2930),
+                textColor = Color(0xFFE6E1E9),
+                iconTint = Color(0xFFD1BCFF),
+                iconBackground = Color.Transparent
+            )
         )
+    }
 
-        // Lighter gradient overlay for better background visibility
+    Scaffold(
+        modifier = modifier,
+        topBar = { HomeTopAppBar() },
+        bottomBar = { HomeBottomBar() },
+        containerColor = colorScheme.background
+    ) { innerPadding ->
+        LazyVerticalGrid(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp),
+            columns = GridCells.Fixed(3),
+            horizontalArrangement = Arrangement.spacedBy(16.dp), // gap-4
+            verticalArrangement = Arrangement.spacedBy(24.dp), // space-y-6
+            contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
+        ) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                ImageCarousel()
+            }
+
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                HomeGreetingCard()
+            }
+
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp) // gap-4
+                ) {
+                    HomeFeatureTile(
+                        tile = tiles[0],  // Class Schedule (col-span-3)
+                        modifier = Modifier.weight(3f)
+                    )
+                    HomeFeatureTile(
+                        tile = tiles[1],  // Grades (col-span-2)
+                        modifier = Modifier.weight(2f)
+                    )
+                }
+            }
+
+            items(
+                items = tiles.drop(2),
+                span = { GridItemSpan(it.span) }
+            ) { tile ->
+                HomeFeatureTile(tile)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeTopAppBar() {
+    val colors = MaterialTheme.colorScheme
+    TopAppBar(
+        title = {
+            Column {
+                Text(
+                    text = "Good Evening!",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = colors.onSurface
+                )
+                Text(
+                    text = "FoTGo",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colors.onSurfaceVariant
+                )
+            }
+        },
+        navigationIcon = {
+            Surface(
+                shape = CircleShape,
+                color = colors.surfaceVariant,
+                tonalElevation = 4.dp
+            ) {
+                IconButton(onClick = { }) {
+                    Icon(
+                        imageVector = Icons.Default.Schedule,
+                        contentDescription = "Dashboard",
+                        tint = colors.onSurface
+                    )
+                }
+            }
+        },
+        actions = {
+            Surface(
+                shape = CircleShape,
+                color = colors.surfaceVariant,
+                tonalElevation = 4.dp
+            ) {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.Search, contentDescription = "Search", tint = colors.onSurface)
+                }
+            }
+            Spacer(Modifier.width(8.dp))
+            Surface(
+                shape = CircleShape,
+                color = colors.surfaceVariant,
+                tonalElevation = 4.dp
+            ) {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.AccountCircle, contentDescription = "Profile", tint = colors.onSurface)
+                }
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent,
+            titleContentColor = colors.onSurface
+        )
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ImageCarousel() {
+    val images = remember {
+        listOf(
+            R.drawable.gemini_generated_image_hxfk22hxfk22hxfk,
+            R.drawable.gemini_generated_image_hxfk22hxfk22hxfk,
+            R.drawable.gemini_generated_image_hxfk22hxfk22hxfk
+        )
+    }
+    val pagerState = rememberPagerState(pageCount = { images.size })
+
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxWidth()
+        ) { page ->
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color(0xFF2B2930),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = images[page]),
+                    contentDescription = "Event ${page + 1}",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        // Pager indicator
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            repeat(images.size) { index ->
+                Box(
+                    modifier = Modifier
+                        .size(if (pagerState.currentPage == index) 24.dp else 8.dp, 8.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(
+                            if (pagerState.currentPage == index)
+                                Color(0xFFD1BCFF)
+                            else
+                                Color(0xFF938F99)
+                        )
+                )
+                if (index < images.size - 1) {
+                    Spacer(Modifier.width(8.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeGreetingCard() {
+    val gradient = Brush.linearGradient(
+        colors = listOf(Color(0xFF4A0D66), Color(0xFF2C1742)) // dynamic-evening gradient
+    )
+    Surface(
+        shape = RoundedCornerShape(28.dp), // extra-large radius
+        color = Color.Transparent,
+        shadowElevation = 24.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0x88000000),
-                            Color(0x66000000),
-                            Color(0x99000000)
-                        )
-                    )
+                .background(gradient)
+                .padding(24.dp) // p-6 = 24px
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.Top
+            ) {
+                // Weather/Time Icon
+                Icon(
+                    imageVector = Icons.Default.NightsStay,
+                    contentDescription = "Evening",
+                    tint = Color(0xFFD1BCFF), // primary color
+                    modifier = Modifier.size(48.dp)
                 )
-        )
 
+                Column {
+                    Text(
+                        text = "Good Evening!",
+                        color = Color.White, // white for better contrast
+                        fontSize = 30.sp, // text-3xl
+                        fontWeight = FontWeight.Normal
+                    )
+                    Spacer(Modifier.height(8.dp)) // mt-2
+                    Text(
+                        text = "Your next class, Quantum Physics, is in Room 301 at 10:00 AM.",
+                        color = Color(0xFFCAC4D0), // on-surface-variant-dark
+                        fontSize = 14.sp, // text-sm
+                        lineHeight = 22.sp // leading-relaxed
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeFeatureTile(tile: HomeActionTile, modifier: Modifier = Modifier ) {
+    Surface(
+        shape = RoundedCornerShape(16.dp), // large radius for all tiles
+        color = tile.background,
+        tonalElevation = 0.dp,
+        border = tile.borderColor?.let { BorderStroke(1.dp, it) },
+        modifier = modifier
+            .then(
+                if (tile.span == 2 || tile.iconBackground != Color.Transparent) {
+                    Modifier.height(128.dp) // h-32 for first row
+                } else {
+                    Modifier.aspectRatio(1f) // aspect-square for 3-column tiles
+                }
+            )
+            .fillMaxWidth()
+            .clickable(onClick = tile.onClick)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(if (tile.span == 2 || tile.iconBackground != Color.Transparent) 16.dp else 12.dp),
+            verticalArrangement = if (tile.iconBackground != Color.Transparent) Arrangement.SpaceBetween else Arrangement.Center,
+            horizontalAlignment = if (tile.iconBackground != Color.Transparent) Alignment.Start else Alignment.CenterHorizontally
         ) {
-            // Scrollable content
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 12.dp)
-                    .padding(top = 20.dp)
-            ) {
-                Spacer(modifier = Modifier.height(20.dp))
-
-            // Header with Small Logo and "FoTGo" Title
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp, horizontal = 8.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Small Logo with golden glowing outline
+            if (tile.iconBackground != Color.Transparent) {
                 Box(
                     modifier = Modifier
-                        .size(42.dp)
-                        .border(
-                            width = 1.5.dp,
-                            color = Color(0xFFD4AF37),
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .background(
-                            color = Color.Transparent,
-                            shape = RoundedCornerShape(10.dp)
-                        ),
+                        .size(48.dp) // w-12 h-12
+                        .background(tile.iconBackground, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "F",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFD4AF37)
+                    Icon(
+                        imageVector = tile.icon,
+                        contentDescription = tile.title,
+                        tint = tile.iconTint,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = "FoTGo",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 26.sp
+            } else {
+                Icon(
+                    imageVector = tile.icon,
+                    contentDescription = tile.title,
+                    tint = tile.iconTint,
+                    modifier = Modifier.size(24.dp)
                 )
+                Spacer(Modifier.height(8.dp)) // gap-2
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Image Carousel for Upcoming Events
-            UpcomingEventsCarousel()
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Main Feature Cards Grid - Liquid Glass Design
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // Row 1: Campus Map (dark red-brown) & Auditorium Booking (gray light)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    LiquidGlassCard(
-                        modifier = Modifier.weight(1f),
-                        title = "Campus\nMap",
-                        buttonText = "View",
-                        icon = Icons.Default.LocationOn,
-                        isEmphasized = true,
-                        tintColor = Color(0xFFFFFFFF), // Base white for transparent effect
-                        glowColor = Color(0xFFFFE8A3),
-                        isTransparent = true, // Make this card transparent
-                        textColorOverride = Color.White, // White text
-                        onClick = onNavigateToMap
-                    )
-
-                    LiquidGlassCard(
-                        modifier = Modifier.weight(1f),
-                        title = "Auditorium\nBooking",
-                        buttonText = "Book",
-                        icon = Icons.Default.DateRange,
-                        isEmphasized = false,
-                        tintColor = Color(0xFFFFFFFF), // Base white for transparent effect
-                        glowColor = Color(0xFFFFE8A3),
-                        textColorOverride = Color.Black, // White text
-                        onClick = { /* TODO */ }
-                    )
-                }
-
-
-                // Row 2: Events (yellow-orange) & Places & Services (sky-blue)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    LiquidGlassCard(
-                        modifier = Modifier.weight(1f),
-                        title = "Events",
-                        buttonText = "View",
-                        icon = Icons.Default.Notifications,
-                        isEmphasized = false,
-                        tintColor = Color(0xFFFCD34D), // Yellow-300
-                        glowColor = Color(0xFFFFE8A3),
-                        isTransparent = false, // Keep vibrant color
-                        textColorOverride = Color.Black, // Black text for light background
-                        onClick = { /* TODO */ }
-                    )
-                    LiquidGlassCard(
-                        modifier = Modifier.weight(1f),
-                        title = "Places &\nServices",
-                        buttonText = "View",
-                        icon = Icons.Default.Place,
-                        isEmphasized = false,
-                        tintColor = Color(0xFF7DD3FC), // Sky-300
-                        glowColor = Color(0xFFFFE8A3),
-                        isTransparent = false, // Keep vibrant color
-                        textColorOverride = Color.Black, // Black text for light background
-                        onClick = { /* TODO */ }
-                    )
-                }
-
-                // Row 3: GPA Calculator (zinc dark) & Class Schedule (zinc-black)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    LiquidGlassCard(
-                        modifier = Modifier.weight(1f),
-                        title = "GPA\nCalculator",
-                        buttonText = "Calculate",
-                        icon = Icons.Default.AccountBox,
-                        isEmphasized = true,
-                        tintColor = Color(0xFF27272A), // Zinc-800
-                        glowColor = Color(0xFFFFE8A3),
-                        isTransparent = false, // Keep vibrant color
-                        textColorOverride = Color.White, // White text for dark background
-                        onClick = { /* TODO */ }
-                    )
-                    LiquidGlassCard(
-                        modifier = Modifier.weight(1f),
-                        title = "Class\nSchedule",
-                        buttonText = "View",
-                        icon = Icons.Default.Info,
-                        isEmphasized = true,
-                        tintColor = Color(0xFF18181B), // Zinc-900
-                        glowColor = Color(0xFFFFE8A3),
-                        isTransparent = false, // Keep vibrant color
-                        textColorOverride = Color.White, // White text for dark background
-                        onClick = { /* TODO */ }
-                    )
-                }
-
-            }
-
-            // Bottom padding for the navigation bar space
-            Spacer(modifier = Modifier.height(100.dp))
-        }
-        }
-
-        // Fixed Bottom Navigation Bar
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 16.dp)
-        ) {
-            BottomNavigationBar()
-        }
-    }
-}
-
-// Liquid Glass Card with Gradient Colors
-@Composable
-fun LiquidGlassCard(
-    modifier: Modifier = Modifier,
-    title: String,
-    buttonText: String,
-    icon: ImageVector,
-    isEmphasized: Boolean = false,
-    tintColor: Color = Color(0xFF007AFF),
-    glowColor: Color = Color(0xFFFFE8A3),
-    isTransparent: Boolean = false, // NEW: for transparent glass effect
-    textColorOverride: Color? = null, // NEW: override text color (white or black)
-    onClick: () -> Unit
-) {
-    // Determine readable text color
-    val textColor = textColorOverride ?: when (tintColor) {
-        Color(0xFFD1D5DB) -> Color(0xFF1F2937) // dark text for light gray background
-        else -> Color(0xFFF7F7F7) // slightly softened white for dark backgrounds
-    }
-
-    // Icon background (glass) depending on tint
-    val iconBgColor = when (tintColor) {
-        Color(0xFFD1D5DB) -> Color(0x20000000) // dark semi-transparent for light bg
-        else -> Color(0x20FFFFFF) // light semi-transparent for dark bg
-    }
-
-    // Button fill (glass)
-    val buttonFill = when (tintColor) {
-        Color(0xFFD1D5DB) -> Color(0x40000000) // slightly darker glass for light tint
-        else -> Color(0x30FFFFFF) // translucent white for dark tint
-    }
-
-    Card(
-        onClick = onClick,
-        modifier = modifier.height(180.dp),
-        shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp
-        )
-    ) {
-        // Outer container draws a subtle glow ring using a horizontal gradient stroke
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(2.dp) // tiny inner padding so border/glow has room
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            glowColor.copy(alpha = 0.18f),
-                            glowColor.copy(alpha = 0.08f)
-                        )
-                    ),
-                    shape = RoundedCornerShape(28.dp)
-                )
-                .padding(1.dp) // spacing between glow ring and main glass panel
-        ) {
-            // Main glass panel - conditional transparency
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = if (isTransparent) {
-                                // Transparent glass effect
-                                listOf(
-                                    tintColor.copy(alpha = 0.08f),
-                                    tintColor.copy(alpha = 0.05f)
-                                )
-                            } else {
-                                // Normal vibrant colors
-                                listOf(
-                                    tintColor.copy(alpha = 0.85f),
-                                    tintColor.copy(alpha = 0.75f)
-                                )
-                            }
-                        ),
-                        shape = RoundedCornerShape(28.dp)
-                    )
-                    // inner subtle border using glowColor but very transparent
-                    .border(
-                        width = 1.dp,
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                glowColor.copy(alpha = 0.24f),
-                                glowColor.copy(alpha = 0.14f)
-                            )
-                        ),
-                        shape = RoundedCornerShape(28.dp)
-                    )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp),
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Top
-                    ) {
-                        Text(
-                            text = title,
-                            fontSize = 19.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = textColor,
-                            lineHeight = 24.sp
-                        )
-
-                        // Icon with glassmorphic background and golden glow when emphasized
-                        Box(
-                            modifier = Modifier
-                                .size(56.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            // If emphasized, tint the icon with glowColor slightly; otherwise use textColor
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = title,
-                                tint = if (isEmphasized) glowColor.copy(alpha = 0.95f) else textColor.copy(alpha = 0.92f),
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-                    }
-
-                    // Glassmorphic Button with golden glow outline
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(46.dp)
-                            .clip(RoundedCornerShape(23.dp))
-                            .background(color = buttonFill, shape = RoundedCornerShape(23.dp))
-                            // overlay thin glow stroke around button using glowColor
-                            .border(
-                                width = 1.dp,
-                                brush = Brush.horizontalGradient(
-                                    colors = listOf(
-                                        glowColor.copy(alpha = 0.9f),
-                                        glowColor.copy(alpha = 0.6f)
-                                    )
-                                ),
-                                shape = RoundedCornerShape(23.dp)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = buttonText,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 15.sp,
-                            color = textColor.copy(alpha = 0.95f)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-// Small Liquid Glass Card with Gradient Colors
-@Composable
-fun SmallLiquidGlassCard(
-    modifier: Modifier = Modifier,
-    title: String,
-    buttonText: String,
-    icon: ImageVector,
-    isEmphasized: Boolean = false,
-    tintColor: Color = Color(0xFF007AFF),
-    onClick: () -> Unit
-) {
-    // Determine text color based on background - all small cards use white text
-    val textColor = Color.White
-
-    Card(
-        onClick = onClick,
-        modifier = modifier.height(180.dp),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp
-        )
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            tintColor.copy(alpha = 0.9f),
-                            tintColor.copy(alpha = 0.8f)
-                        )
-                    ),
-                    shape = RoundedCornerShape(24.dp)
-                )
-                .border(
-                    width = 1.dp,
-                    color = tintColor.copy(alpha = 0.5f),
-                    shape = RoundedCornerShape(24.dp)
-                )
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Text(
-                        text = title,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = textColor,
-                        lineHeight = 19.sp
-                    )
-
-                    // Icon with glassmorphic background
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .background(
-                                color = Color(0x20FFFFFF),
-                                shape = RoundedCornerShape(12.dp)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = title,
-                            tint = textColor.copy(alpha = 0.9f),
-                            modifier = Modifier.size(30.dp)
-                        )
-                    }
-                }
-
-                // Glassmorphic Button
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(42.dp)
-                        .background(
-                            color = Color(0x30FFFFFF),
-                            shape = RoundedCornerShape(21.dp)
-                        )
-                        .border(
-                            width = 1.dp,
-                            color = Color(0x40FFFFFF),
-                            shape = RoundedCornerShape(21.dp)
-                        )
-                        .clip(RoundedCornerShape(21.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = buttonText,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 13.sp,
-                        color = textColor.copy(alpha = 0.9f)
-                    )
-                }
-            }
-        }
-    }
-}
-
-// Upcoming Events Carousel
-@Composable
-fun UpcomingEventsCarousel() {
-    // Single featured event - full width
-    val eventName = "Tech Conference 2024"
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        EventImageCard(
-            eventName = eventName,
-            index = 0
-        )
-    }
-}
-
-@Composable
-fun EventImageCard(
-    eventName: String,
-    index: Int
-) {
-    val glowColor = Color(0xFFFFE8A3)
-
-    // Different gradient colors for each card
-    val gradientColors = when (index % 4) {
-        0 -> listOf(Color(0xFF6366F1), Color(0xFF8B5CF6)) // Purple to Violet
-        1 -> listOf(Color(0xFFEC4899), Color(0xFFF59E0B)) // Pink to Orange
-        2 -> listOf(Color(0xFF10B981), Color(0xFF3B82F6)) // Green to Blue
-        else -> listOf(Color(0xFFF59E0B), Color(0xFFEF4444)) // Orange to Red
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        glowColor.copy(alpha = 0.12f),
-                        glowColor.copy(alpha = 0.06f)
-                    )
-                ),
-                shape = RoundedCornerShape(16.dp)
+            Text(
+                text = tile.title,
+                style = if (tile.span == 2 || tile.iconBackground != Color.Transparent) {
+                    MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                } else {
+                    MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                },
+                color = tile.textColor,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = if (tile.iconBackground != Color.Transparent) androidx.compose.ui.text.style.TextAlign.Start else androidx.compose.ui.text.style.TextAlign.Center
             )
-            .padding(1.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = gradientColors.map { it.copy(alpha = 0.85f) }
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .border(
-                    width = 0.5.dp,
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            glowColor.copy(alpha = 0.25f),
-                            glowColor.copy(alpha = 0.12f)
-                        )
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                )
-        ) {
-            // Placeholder for actual image
-            val bgPainter: Painter = painterResource(id = R.drawable.gemini_generated_image_hxfk22hxfk22hxfk)
-            Image(
-                painter = bgPainter,
-                contentDescription = eventName,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(16.dp))
-            )
-
-            // Gradient overlay for text readability
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                Color.Black.copy(alpha = 0.7f)
-                            )
-                        ),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-            )
-
-            // Text overlay at bottom
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                Text(
-                    text = eventName,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    lineHeight = 20.sp
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Dec 15, 2024 • 10:00 AM",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.White.copy(alpha = 0.85f)
-                )
-            }
         }
     }
 }
 
 @Composable
-fun BottomNavigationBar() {
-
-    val glowColor = Color(0xFFFFE8A3) // Golden glow similar to cards
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp)
-            .padding(horizontal = 16.dp)
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        glowColor.copy(alpha = 0.35f),
-                        glowColor.copy(alpha = 0.25f)
-                    )
-                ),
-                shape = RoundedCornerShape(35.dp)
-            )
-            .padding(1.5.dp) // Glow border thickness
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF1A1A1A).copy(alpha = 0.85f), // Much more opaque dark background
-                        Color(0xFF0D0D0D).copy(alpha = 0.90f)
-                    )
-                ),
-                shape = RoundedCornerShape(35.dp)
-            )
-            .border(
-                width = 1.dp,
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        glowColor.copy(alpha = 0.45f),
-                        glowColor.copy(alpha = 0.35f)
-                    )
-                ),
-                shape = RoundedCornerShape(35.dp)
-            )
-    ) {
-
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 20.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BottomNavItem(Icons.Default.Home, isSelected = true)   // Active
-            BottomNavItem(Icons.Default.Search, isSelected = false)
-            BottomNavItem(Icons.Default.Info, isSelected = false)
-            BottomNavItem(Icons.Default.Notifications, isSelected = false)
-            BottomNavItem(Icons.Default.Person, isSelected = false)
-        }
+private fun HomeBottomBar() {
+    NavigationBar {
+        NavigationBarItem(selected = true, onClick = { }, icon = { Icon(Icons.Default.Home, null) }, label = { Text("Home") })
+        NavigationBarItem(selected = false, onClick = { }, icon = { Icon(Icons.Default.Explore, null) }, label = { Text("Explore") })
+        NavigationBarItem(selected = false, onClick = { }, icon = { Icon(Icons.Default.History, null) }, label = { Text("History") })
+        NavigationBarItem(selected = false, onClick = { }, icon = { Icon(Icons.Default.Notifications, null) }, label = { Text("Alerts") })
     }
 }
 
-@Composable
-fun BottomNavItem(icon: ImageVector, isSelected: Boolean) {
-
-    val iconColor = if (isSelected) {
-        Color(0xFFFFE48F) // Active glowing yellow
-    } else {
-        Color(0xFFBFBFBF) // Inactive gray
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = iconColor,
-            modifier = Modifier.size(26.dp)
-        )
-
-        if (isSelected) {
-            Box(
-                modifier = Modifier
-                    .size(6.dp)
-                    .background(
-                        color = Color(0xFFFCE9B7), // Indicator dot color
-                        shape = CircleShape
-                    )
-            )
-        }
-    }
-}
-
+private data class HomeActionTile(
+    val title: String,
+    val icon: ImageVector,
+    val background: Color,
+    val textColor: Color,
+    val iconTint: Color,
+    val iconBackground: Color,
+    val borderColor: Color? = null,
+    val span: Int = 1,
+    val onClick: () -> Unit = {}
+)

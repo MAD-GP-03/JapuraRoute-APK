@@ -14,7 +14,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.japuraroutef.R
@@ -175,20 +174,27 @@ fun MapScreen(onNavigateBack: () -> Unit) {
             }
         }
 
-        // Top App Bar with back button
+        // Top App Bar with back button - Material 3 theme
+        val colorScheme = MaterialTheme.colorScheme
         TopAppBar(
-            title = { Text("Campus Map", color = Color.White) },
+            title = {
+                Text(
+                    "Campus Map",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
+                        contentDescription = "Back"
                     )
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xDD000000)
+                containerColor = colorScheme.surface.copy(alpha = 0.95f),
+                titleContentColor = colorScheme.onSurface,
+                navigationIconContentColor = colorScheme.onSurface
             )
         )
 
@@ -201,8 +207,9 @@ fun MapScreen(onNavigateBack: () -> Unit) {
             if (showPlacesList) {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    color = Color.White,
+                    color = colorScheme.surface,
                     shadowElevation = 8.dp,
+                    tonalElevation = 3.dp,
                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                 ) {
                     LazyColumn(
@@ -244,7 +251,9 @@ fun MapScreen(onNavigateBack: () -> Unit) {
                     .padding(16.dp),
                 elevation = CardDefaults.cardElevation(8.dp),
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
+                colors = CardDefaults.cardColors(
+                    containerColor = colorScheme.surface
+                )
             ) {
                 Column(
                     modifier = Modifier
@@ -255,12 +264,12 @@ fun MapScreen(onNavigateBack: () -> Unit) {
                         Text(
                             text = "Navigating to: ${selectedDestination!!.name}",
                             style = MaterialTheme.typography.titleMedium,
-                            color = Color.Black
+                            color = colorScheme.onSurface
                         )
                         Text(
                             text = selectedDestination!!.description,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color.Gray
+                            color = colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Button(
@@ -271,10 +280,10 @@ fun MapScreen(onNavigateBack: () -> Unit) {
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFD4AF37)
+                                containerColor = colorScheme.error
                             )
                         ) {
-                            Text("Clear Route", color = Color.White)
+                            Text("Clear Route")
                         }
                     } else {
                         Button(
@@ -282,12 +291,11 @@ fun MapScreen(onNavigateBack: () -> Unit) {
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(16.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFD4AF37)
+                                containerColor = colorScheme.primary
                             )
                         ) {
                             Text(
-                                if (showPlacesList) "Hide Places" else "Select Destination",
-                                color = Color.White
+                                if (showPlacesList) "Hide Places" else "Select Destination"
                             )
                         }
                     }
@@ -299,6 +307,8 @@ fun MapScreen(onNavigateBack: () -> Unit) {
 
 @Composable
 fun PlaceItem(place: FacultyPlace, onSelect: () -> Unit) {
+    val colorScheme = MaterialTheme.colorScheme
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -308,15 +318,18 @@ fun PlaceItem(place: FacultyPlace, onSelect: () -> Unit) {
         Text(
             text = place.name,
             style = MaterialTheme.typography.titleMedium,
-            color = Color.Black
+            color = colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = place.description,
             style = MaterialTheme.typography.bodySmall,
-            color = Color.Gray
+            color = colorScheme.onSurfaceVariant
         )
-        HorizontalDivider(modifier = Modifier.padding(top = 12.dp), color = Color.LightGray)
+        HorizontalDivider(
+            modifier = Modifier.padding(top = 12.dp),
+            color = colorScheme.outlineVariant
+        )
     }
 }
 
