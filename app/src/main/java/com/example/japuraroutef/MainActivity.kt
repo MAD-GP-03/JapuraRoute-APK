@@ -10,6 +10,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.japuraroutef.ui.ExtendedSplashScreen
 import com.example.japuraroutef.ui.HomeScreen
 import com.example.japuraroutef.ui.MapScreen
 import com.example.japuraroutef.ui.theme.JapuraRouteFTheme
@@ -19,6 +21,9 @@ class MainActivity : ComponentActivity() {
     private lateinit var themePreferences: ThemePreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Install splash screen before super.onCreate()
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
 
         themePreferences = ThemePreferences(this)
@@ -46,15 +51,19 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun AppNavigation() {
-        var currentScreen by remember { mutableStateOf<Screen>(Screen.Home) }
+        var currentScreen by remember { mutableStateOf<Screen>(Screen.Splash) }
 
         when (currentScreen) {
+            Screen.Splash -> ExtendedSplashScreen(
+                onSplashFinished = { currentScreen = Screen.Home }
+            )
             Screen.Home -> HomeScreen(onNavigateToMap = { currentScreen = Screen.Map })
             Screen.Map -> MapScreen(onNavigateBack = { currentScreen = Screen.Home })
         }
     }
 
     private sealed class Screen {
+        data object Splash : Screen()
         data object Home : Screen()
         data object Map : Screen()
     }

@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="1095dp"
+    android:height="898dp"
+    android:viewportWidth="1095"
+    android:viewportHeight="898">
+
+    <!-- Blurred blob background -->
+    <path
+        android:fillColor="#4A2E7E"
+        android:fillAlpha="0.7"
+        android:pathData="M410.518,436.721C164.045,403.967 151.054,163.518 164.045,140.911C177.035,118.304 430.701,131.649 527.69,220.739C624.679,309.829 778.63,487.643 656.991,520.397C535.352,553.151 656.991,469.475 410.518,436.721Z"/>
+</vector>
+

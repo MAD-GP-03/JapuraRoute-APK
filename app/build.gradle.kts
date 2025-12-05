@@ -54,6 +54,9 @@ dependencies {
     // DataStore for theme preferences
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    // Splash Screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

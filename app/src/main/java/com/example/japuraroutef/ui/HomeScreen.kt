@@ -12,9 +12,11 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.EventNote
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,8 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -47,71 +47,71 @@ fun HomeScreen(
         listOf(
             HomeActionTile(
                 title = "Class Schedule",
-                icon = Icons.Default.EventNote,
-                background = Color(0xFF4A4458), // secondary-container-dark
-                textColor = Color(0xFFE8DEF8), // on-secondary-container-dark
-                iconTint = Color(0xFFE8DEF8),
-                iconBackground = Color(0xFF36343B), // surface-container-highest-dark
+                icon = Icons.AutoMirrored.Filled.EventNote,
+                background = colorScheme.secondaryContainer,
+                textColor = colorScheme.onSecondaryContainer,
+                iconTint = colorScheme.onSecondaryContainer,
+                iconBackground = com.example.japuraroutef.ui.theme.SurfaceContainerHighestDark,
                 span = 2,
                 onClick = onNavigateToSchedule
             ),
             HomeActionTile(
                 title = "Grades",
                 icon = Icons.Default.Leaderboard,
-                background = Color(0xFF211F26), // surface-container-dark
-                textColor = Color(0xFFE6E1E9), // on-surface-dark
-                iconTint = Color(0xFFCAC4D0), // on-surface-variant-dark
-                iconBackground = Color(0xFF36343B), // surface-container-highest-dark
-                borderColor = Color(0xFF938F99), // outline-dark
+                background = com.example.japuraroutef.ui.theme.SurfaceContainerDark,
+                textColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                iconTint = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
+                iconBackground = com.example.japuraroutef.ui.theme.SurfaceContainerHighestDark,
+                borderColor = com.example.japuraroutef.ui.theme.OutlineDark,
                 onClick = onNavigateToGrades
             ),
             HomeActionTile(
                 title = "Campus Map",
                 icon = Icons.Default.LocationOn,
-                background = Color(0xFF2B2930), // surface-container-high-dark
-                textColor = Color(0xFFE6E1E9), // on-surface-dark
-                iconTint = Color(0xFFD1BCFF), // primary
+                background = com.example.japuraroutef.ui.theme.SurfaceContainerHighDark,
+                textColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                iconTint = colorScheme.primary,
                 iconBackground = Color.Transparent,
                 onClick = onNavigateToMap
             ),
             HomeActionTile(
                 title = "Events",
                 icon = Icons.Default.Celebration,
-                background = Color(0xFF2B2930),
-                textColor = Color(0xFFE6E1E9),
-                iconTint = Color(0xFFD1BCFF),
+                background = com.example.japuraroutef.ui.theme.SurfaceContainerHighDark,
+                textColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                iconTint = colorScheme.primary,
                 iconBackground = Color.Transparent
             ),
             HomeActionTile(
                 title = "Notices",
                 icon = Icons.Default.Notifications,
-                background = Color(0xFF2B2930),
-                textColor = Color(0xFFE6E1E9),
-                iconTint = Color(0xFFD1BCFF),
+                background = com.example.japuraroutef.ui.theme.SurfaceContainerHighDark,
+                textColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                iconTint = colorScheme.primary,
                 iconBackground = Color.Transparent
             ),
             HomeActionTile(
                 title = "Booking",
                 icon = Icons.Default.Book,
-                background = Color(0xFF2B2930),
-                textColor = Color(0xFFE6E1E9),
-                iconTint = Color(0xFFD1BCFF),
+                background = com.example.japuraroutef.ui.theme.SurfaceContainerHighDark,
+                textColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                iconTint = colorScheme.primary,
                 iconBackground = Color.Transparent
             ),
             HomeActionTile(
                 title = "Transport",
                 icon = Icons.Default.DirectionsBus,
-                background = Color(0xFF2B2930),
-                textColor = Color(0xFFE6E1E9),
-                iconTint = Color(0xFFD1BCFF),
+                background = com.example.japuraroutef.ui.theme.SurfaceContainerHighDark,
+                textColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                iconTint = colorScheme.primary,
                 iconBackground = Color.Transparent
             ),
             HomeActionTile(
                 title = "Services",
                 icon = Icons.Default.Build,
-                background = Color(0xFF2B2930),
-                textColor = Color(0xFFE6E1E9),
-                iconTint = Color(0xFFD1BCFF),
+                background = com.example.japuraroutef.ui.theme.SurfaceContainerHighDark,
+                textColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                iconTint = colorScheme.primary,
                 iconBackground = Color.Transparent
             )
         )
@@ -119,19 +119,25 @@ fun HomeScreen(
 
     Scaffold(
         modifier = modifier,
-        topBar = { HomeTopAppBar() },
         bottomBar = { HomeBottomBar() },
         containerColor = colorScheme.background
     ) { innerPadding ->
-        LazyVerticalGrid(
+        Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            columns = GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.spacedBy(16.dp), // gap-4
-            verticalArrangement = Arrangement.spacedBy(24.dp), // space-y-6
-            contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
         ) {
+            HomeTopAppBar()
+
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                columns = GridCells.Fixed(3),
+                horizontalArrangement = Arrangement.spacedBy(16.dp), // gap-4
+                verticalArrangement = Arrangement.spacedBy(24.dp), // space-y-6
+                contentPadding = PaddingValues(top = 4.dp, bottom = 16.dp)
+            ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 ImageCarousel()
             }
@@ -163,6 +169,7 @@ fun HomeScreen(
                 HomeFeatureTile(tile)
             }
         }
+        }
     }
 }
 
@@ -170,63 +177,62 @@ fun HomeScreen(
 @Composable
 private fun HomeTopAppBar() {
     val colors = MaterialTheme.colorScheme
-    TopAppBar(
-        title = {
-            Column {
+    Surface(
+        color = Color.Transparent,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(72.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Logo and Title
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_fotgo_logo),
+                    contentDescription = "FOTGo Logo",
+                    modifier = Modifier.size(48.dp)
+                )
                 Text(
-                    text = "Good Evening!",
+                    text = "FOTGo",
                     style = MaterialTheme.typography.titleLarge,
-                    color = colors.onSurface
-                )
-                Text(
-                    text = "FoTGo",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = colors.onSurfaceVariant
+                    color = colors.onSurface,
+                    fontWeight = FontWeight.Bold
                 )
             }
-        },
-        navigationIcon = {
-            Surface(
-                shape = CircleShape,
-                color = colors.surfaceVariant,
-                tonalElevation = 4.dp
+
+            // Actions
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { }) {
-                    Icon(
-                        imageVector = Icons.Default.Schedule,
-                        contentDescription = "Dashboard",
-                        tint = colors.onSurface
-                    )
+                Surface(
+                    shape = CircleShape,
+                    color = colors.surfaceVariant,
+                    tonalElevation = 4.dp
+                ) {
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Default.Search, contentDescription = "Search", tint = colors.onSurface)
+                    }
+                }
+                Surface(
+                    shape = CircleShape,
+                    color = colors.surfaceVariant,
+                    tonalElevation = 4.dp
+                ) {
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Default.AccountCircle, contentDescription = "Profile", tint = colors.onSurface)
+                    }
                 }
             }
-        },
-        actions = {
-            Surface(
-                shape = CircleShape,
-                color = colors.surfaceVariant,
-                tonalElevation = 4.dp
-            ) {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.Search, contentDescription = "Search", tint = colors.onSurface)
-                }
-            }
-            Spacer(Modifier.width(8.dp))
-            Surface(
-                shape = CircleShape,
-                color = colors.surfaceVariant,
-                tonalElevation = 4.dp
-            ) {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.AccountCircle, contentDescription = "Profile", tint = colors.onSurface)
-                }
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            scrolledContainerColor = Color.Transparent,
-            titleContentColor = colors.onSurface
-        )
-    )
+        }
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -250,7 +256,7 @@ private fun ImageCarousel() {
         ) { page ->
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = Color(0xFF2B2930),
+                color = com.example.japuraroutef.ui.theme.SurfaceContainerHighDark,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(160.dp)
@@ -281,9 +287,9 @@ private fun ImageCarousel() {
                         .clip(RoundedCornerShape(4.dp))
                         .background(
                             if (pagerState.currentPage == index)
-                                Color(0xFFD1BCFF)
+                                com.example.japuraroutef.ui.theme.Primary
                             else
-                                Color(0xFF938F99)
+                                com.example.japuraroutef.ui.theme.OutlineDark
                         )
                 )
                 if (index < images.size - 1) {
@@ -297,7 +303,10 @@ private fun ImageCarousel() {
 @Composable
 private fun HomeGreetingCard() {
     val gradient = Brush.linearGradient(
-        colors = listOf(Color(0xFF4A0D66), Color(0xFF2C1742)) // dynamic-evening gradient
+        colors = listOf(
+            com.example.japuraroutef.ui.theme.DynamicEveningStart,
+            com.example.japuraroutef.ui.theme.DynamicEveningEnd
+        )
     )
     Surface(
         shape = RoundedCornerShape(28.dp), // extra-large radius
@@ -319,7 +328,7 @@ private fun HomeGreetingCard() {
                 Icon(
                     imageVector = Icons.Default.NightsStay,
                     contentDescription = "Evening",
-                    tint = Color(0xFFD1BCFF), // primary color
+                    tint = com.example.japuraroutef.ui.theme.Primary,
                     modifier = Modifier.size(48.dp)
                 )
 
@@ -333,7 +342,7 @@ private fun HomeGreetingCard() {
                     Spacer(Modifier.height(8.dp)) // mt-2
                     Text(
                         text = "Your next class, Quantum Physics, is in Room 301 at 10:00 AM.",
-                        color = Color(0xFFCAC4D0), // on-surface-variant-dark
+                        color = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
                         fontSize = 14.sp, // text-sm
                         lineHeight = 22.sp // leading-relaxed
                     )
