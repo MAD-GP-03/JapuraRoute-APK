@@ -7,6 +7,7 @@ import com.example.japuraroutef.model.RegisterRequest
 import com.example.japuraroutef.model.RegisterResponse
 import com.example.japuraroutef.model.UniYear
 import com.example.japuraroutef.repository.AuthRepository
+import com.example.japuraroutef.utils.ToastManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,6 +22,13 @@ class RegistrationViewModel : ViewModel() {
     private val _currentStep = MutableStateFlow(1)
     val currentStep: StateFlow<Int> = _currentStep
 
+    // Test ToastManager initialization
+    init {
+        android.util.Log.d("RegistrationViewModel", "RegistrationViewModel initialized")
+        // Test toast to verify it's working - temporarily enabled for testing
+        // ToastManager.showInfo("Registration system ready!")
+    }
+
     // Step 1 fields
     val username = MutableStateFlow("")
     val fullName = MutableStateFlow("")
@@ -34,7 +42,7 @@ class RegistrationViewModel : ViewModel() {
     val uniYear = MutableStateFlow<UniYear?>(null)
     val regNumber = MutableStateFlow("")
     val nic = MutableStateFlow("")
-    val selectedFocusArea = MutableStateFlow(FocusArea.COMMON)
+    val selectedFocusArea = MutableStateFlow(FocusArea.SOFTWARE)
 
     fun canSelectFocusArea(): Boolean {
         return uniYear.value in listOf(UniYear.THIRD_YEAR, UniYear.FOURTH_YEAR)
@@ -191,23 +199,70 @@ class RegistrationViewModel : ViewModel() {
                 password = password.value,
                 phoneNumber = phoneNumber.value,
                 address = address.value,
+                role = "STUDENT",
                 uniYear = uniYear.value!!.name,
                 regNumber = regNumber.value,
+                department = "IT",
                 focusArea = getFocusArea(),
                 nic = nic.value
             )
 
+            // Log the request data for debugging
+            android.util.Log.d("RegistrationViewModel", "Sending registration request:")
+            android.util.Log.d("RegistrationViewModel", "Username: ${request.username}")
+            android.util.Log.d("RegistrationViewModel", "FullName: ${request.fullName}")
+            android.util.Log.d("RegistrationViewModel", "Email: ${request.email}")
+            android.util.Log.d("RegistrationViewModel", "PhoneNumber: ${request.phoneNumber}")
+            android.util.Log.d("RegistrationViewModel", "Address: ${request.address}")
+            android.util.Log.d("RegistrationViewModel", "Role: ${request.role}")
+            android.util.Log.d("RegistrationViewModel", "UniYear: ${request.uniYear}")
+            android.util.Log.d("RegistrationViewModel", "RegNumber: ${request.regNumber}")
+            android.util.Log.d("RegistrationViewModel", "Department: ${request.department}")
+            android.util.Log.d("RegistrationViewModel", "FocusArea: ${request.focusArea}")
+            android.util.Log.d("RegistrationViewModel", "NIC: ${request.nic}")
+
             val result = authRepository.register(request)
             _registrationState.value = if (result.isSuccess) {
+                android.util.Log.d("RegistrationViewModel", "Registration successful!")
+                ToastManager.showSuccess("Account created successfully! Welcome to FOTGo!")
                 RegistrationState.Success(result.getOrNull()!!)
             } else {
-                RegistrationState.Error(result.exceptionOrNull()?.message ?: "Registration failed")
+                val exception = result.exceptionOrNull()
+                val errorMessage = exception?.message ?: "Registration failed"
+
+                // Enhanced error logging
+                android.util.Log.e("RegistrationViewModel", "Registration failed with error: $errorMessage")
+                android.util.Log.e("RegistrationViewModel", "Exception type: ${exception?.javaClass?.simpleName}")
+
+                // Parse error message from backend response
+                val userErrorMessage = when {
+                    errorMessage.contains("Email already exists", ignoreCase = true) -> "This email is already registered. Please use a different email."
+                    errorMessage.contains("Username already exists", ignoreCase = true) -> "This username is already taken. Please choose a different one."
+                    errorMessage.contains("400", ignoreCase = true) && errorMessage.contains("error", ignoreCase = true) -> {
+                        // Try to extract the actual error message from JSON response
+                        try {
+                            val errorStart = errorMessage.indexOf("\"error\":\"") + 9
+                            val errorEnd = errorMessage.indexOf("\"", errorStart)
+                            if (errorStart > 8 && errorEnd > errorStart) {
+                                errorMessage.substring(errorStart, errorEnd)
+                            } else "Invalid information provided. Please check your details."
+                        } catch (e: Exception) {
+                            "Invalid information provided. Please check your details."
+                        }
+                    }
+                    errorMessage.contains("409", ignoreCase = true) -> "Username or email already exists."
+                    errorMessage.contains("network", ignoreCase = true) -> "Network error. Please check your connection."
+                    else -> "Registration failed. Please try again."
+                }
+
+                ToastManager.showError(userErrorMessage)
+                RegistrationState.Error(errorMessage)
             }
         }
+    }
 
-        fun resetState() {
-            _registrationState.value = RegistrationState.Idle
-        }
+    fun resetState() {
+        _registrationState.value = RegistrationState.Idle
     }
 }
 

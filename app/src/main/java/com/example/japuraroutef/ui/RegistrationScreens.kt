@@ -27,6 +27,7 @@ import com.example.japuraroutef.model.FocusArea
 import com.example.japuraroutef.model.UniYear
 import com.example.japuraroutef.viewmodel.RegistrationState
 import com.example.japuraroutef.viewmodel.RegistrationViewModel
+import com.example.japuraroutef.utils.ToastHost
 
 @Composable
 fun RegistrationScreen(
@@ -44,14 +45,25 @@ fun RegistrationScreen(
         }
     }
 
-    when (currentStep) {
-        1 -> RegistrationStep1Screen(
-            viewModel = viewModel,
-            onBackToLogin = onBackToLogin
-        )
-        2 -> RegistrationStep2Screen(
-            viewModel = viewModel
-        )
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (currentStep) {
+            1 -> RegistrationStep1Screen(
+                viewModel = viewModel,
+                onBackToLogin = onBackToLogin
+            )
+            2 -> RegistrationStep2Screen(
+                viewModel = viewModel
+            )
+        }
+
+        // Position ToastHost at the bottom for proper snackbar display
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+        ) {
+            ToastHost()
+        }
     }
 }
 
@@ -242,23 +254,30 @@ fun RegistrationStep1Screen(
                     enabled = viewModel.validateStep1(),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
-                    shape = RoundedCornerShape(24.dp),
+                        .height(56.dp),
+                    shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = com.example.japuraroutef.ui.theme.Primary.copy(alpha = 0.9f),
-                        contentColor = com.example.japuraroutef.ui.theme.OnPrimaryContainerDark,
-                        disabledContainerColor = com.example.japuraroutef.ui.theme.Primary.copy(alpha = 0.5f),
-                        disabledContentColor = com.example.japuraroutef.ui.theme.OnPrimaryContainerDark.copy(alpha = 0.5f)
+                        containerColor = if (viewModel.validateStep1())
+                            com.example.japuraroutef.ui.theme.Primary
+                        else
+                            com.example.japuraroutef.ui.theme.Primary.copy(alpha = 0.3f),
+                        contentColor = if (viewModel.validateStep1())
+                            Color.Black
+                        else
+                            Color.Black.copy(alpha = 0.6f),
+                        disabledContainerColor = com.example.japuraroutef.ui.theme.Primary.copy(alpha = 0.3f),
+                        disabledContentColor = Color.Black.copy(alpha = 0.6f)
                     ),
                     elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 2.dp,
-                        pressedElevation = 4.dp
+                        defaultElevation = if (viewModel.validateStep1()) 6.dp else 2.dp,
+                        pressedElevation = if (viewModel.validateStep1()) 8.dp else 4.dp,
+                        disabledElevation = 1.dp
                     )
                 ) {
                     Text(
                         "Continue",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Medium
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -434,7 +453,7 @@ fun RegistrationStep2Screen(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
             ) {
                 Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
+                    Icons.AutoMirrored.Filled.ArrowBackIos,
                     contentDescription = "Back",
                     tint = com.example.japuraroutef.ui.theme.OnSurfaceDark
                 )
@@ -706,7 +725,7 @@ fun RegistrationStep2Screen(
                                 expanded = expandedFocus,
                                 onDismissRequest = { expandedFocus = false }
                             ) {
-                                FocusArea.entries.forEach { area ->
+                                FocusArea.entries.filter { it != FocusArea.COMMON }.forEach { area ->
                                     DropdownMenuItem(
                                         text = { Text(area.name) },
                                         onClick = {
@@ -741,38 +760,13 @@ fun RegistrationStep2Screen(
                 )
             }
 
-            // Fixed bottom section - Create Account button and error state
+            // Fixed bottom section - Create Account button
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp, bottom = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Error/Loading state
-                when (registrationState) {
-                    is RegistrationState.Loading -> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                color = com.example.japuraroutef.ui.theme.Primary
-                            )
-                        }
-                    }
-                    is RegistrationState.Error -> {
-                        Text(
-                            text = (registrationState as RegistrationState.Error).message,
-                            color = Color(0xFFFF6B6B),
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
-                    }
-                    else -> {}
-                }
-
                 // Create Account button
                 Button(
                     onClick = { viewModel.register() },
@@ -782,21 +776,48 @@ fun RegistrationStep2Screen(
                         .height(56.dp),
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = com.example.japuraroutef.ui.theme.Primary.copy(alpha = 0.9f),
-                        contentColor = com.example.japuraroutef.ui.theme.OnPrimaryContainerDark,
-                        disabledContainerColor = com.example.japuraroutef.ui.theme.Primary.copy(alpha = 0.5f),
-                        disabledContentColor = com.example.japuraroutef.ui.theme.OnPrimaryContainerDark.copy(alpha = 0.5f)
+                        containerColor = if (viewModel.validateStep2() && registrationState !is RegistrationState.Loading)
+                            com.example.japuraroutef.ui.theme.Primary
+                        else
+                            com.example.japuraroutef.ui.theme.Primary.copy(alpha = 0.3f),
+                        contentColor = if (viewModel.validateStep2() && registrationState !is RegistrationState.Loading)
+                            Color.Black
+                        else
+                            Color.Black.copy(alpha = 0.6f),
+                        disabledContainerColor = com.example.japuraroutef.ui.theme.Primary.copy(alpha = 0.3f),
+                        disabledContentColor = Color.Black.copy(alpha = 0.6f)
                     ),
                     elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 4.dp,
-                        pressedElevation = 8.dp
+                        defaultElevation = if (viewModel.validateStep2() && registrationState !is RegistrationState.Loading) 6.dp else 2.dp,
+                        pressedElevation = if (viewModel.validateStep2() && registrationState !is RegistrationState.Loading) 8.dp else 4.dp,
+                        disabledElevation = 1.dp
                     )
                 ) {
-                    Text(
-                        "Create Account",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (registrationState is RegistrationState.Loading) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = Color.Black.copy(alpha = 0.7f),
+                                strokeWidth = 2.dp
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                "Creating Account...",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black.copy(alpha = 0.7f)
+                            )
+                        }
+                    } else {
+                        Text(
+                            "Create Account",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
