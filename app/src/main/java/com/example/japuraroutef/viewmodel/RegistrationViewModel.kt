@@ -26,6 +26,7 @@ class RegistrationViewModel : ViewModel() {
     val fullName = MutableStateFlow("")
     val email = MutableStateFlow("")
     val password = MutableStateFlow("")
+    val confirmPassword = MutableStateFlow("")
 
     // Step 2 fields
     val phoneNumber = MutableStateFlow("")
@@ -55,7 +56,9 @@ class RegistrationViewModel : ViewModel() {
                 username.value.matches(Regex("^[a-zA-Z0-9_]+$")) &&
                 fullName.value.length >= 2 &&
                 email.value.matches(Regex(emailPattern)) &&
-                password.value.matches(Regex(passwordPattern))
+                password.value.matches(Regex(passwordPattern)) &&
+                password.value == confirmPassword.value &&
+                confirmPassword.value.isNotEmpty()
     }
 
     fun validateStep2(): Boolean {

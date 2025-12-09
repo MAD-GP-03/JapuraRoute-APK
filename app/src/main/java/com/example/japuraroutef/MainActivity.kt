@@ -14,6 +14,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.japuraroutef.ui.ExtendedSplashScreen
 import com.example.japuraroutef.ui.HomeScreen
 import com.example.japuraroutef.ui.MapScreen
+import com.example.japuraroutef.ui.RegistrationScreen
 import com.example.japuraroutef.ui.theme.JapuraRouteFTheme
 import com.example.japuraroutef.ui.theme.ThemePreferences
 
@@ -55,10 +56,21 @@ class MainActivity : ComponentActivity() {
 
         when (currentScreen) {
             Screen.Splash -> ExtendedSplashScreen(
-                onSplashFinished = { currentScreen = Screen.Home }
+                onSplashFinished = { currentScreen = Screen.Registration }  // Navigate to Registration for testing
             )
             Screen.Home -> HomeScreen(onNavigateToMap = { currentScreen = Screen.Map })
             Screen.Map -> MapScreen(onNavigateBack = { currentScreen = Screen.Home })
+            Screen.Registration -> RegistrationScreen(
+                onRegistrationSuccess = { token ->
+                    // Handle successful registration (save token, navigate to home)
+                    println("Registration successful! Token: $token")
+                    currentScreen = Screen.Home
+                },
+                onBackToLogin = {
+                    // For now, go back to home
+                    currentScreen = Screen.Home
+                }
+            )
         }
     }
 
@@ -66,6 +78,7 @@ class MainActivity : ComponentActivity() {
         data object Splash : Screen()
         data object Home : Screen()
         data object Map : Screen()
+        data object Registration : Screen()
     }
 
 }

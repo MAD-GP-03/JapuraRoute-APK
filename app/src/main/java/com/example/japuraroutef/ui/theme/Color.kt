@@ -92,3 +92,8 @@ val OutlineVariantDark = Color(0xFF49454F)
 // Surface Tint for Glassmorphism tweaks
 @Suppress("unused") val GlassSurfaceLight = Color(0x33FFFFFF)
 @Suppress("unused") val GlassSurfaceDark = Color(0x1AFBF9FF)
+
+// Registration Field Colors (matching HTML design)
+val RegistrationFieldBackgroundDark = Color(0xFF1F1F1F)  // Dark field background (#1F1F1F from HTML)
+val RegistrationFieldPlaceholderDark = Color(0xFF757575)  // Gray placeholder text
+
