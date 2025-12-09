@@ -179,14 +179,15 @@ fun RegistrationStep1Screen(
                     .fillMaxWidth()
                     .weight(1f)
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 // Username - Icon on left
                 InputFieldWithIcon(
                     value = username,
                     onValueChange = { viewModel.username.value = it },
                     label = "Username",
-                    icon = Icons.Default.PersonOutline
+                    icon = Icons.Default.PersonOutline,
+                    errorMessage = if (username.isNotBlank()) viewModel.validateUsername() else null
                 )
 
                 // Full Name
@@ -194,7 +195,8 @@ fun RegistrationStep1Screen(
                     value = fullName,
                     onValueChange = { viewModel.fullName.value = it },
                     label = "Full Name",
-                    icon = Icons.Default.Badge
+                    icon = Icons.Default.Badge,
+                    errorMessage = if (fullName.isNotBlank()) viewModel.validateFullName() else null
                 )
 
                 // Email
@@ -203,7 +205,8 @@ fun RegistrationStep1Screen(
                     onValueChange = { viewModel.email.value = it },
                     label = "Email Address",
                     icon = Icons.Default.AlternateEmail,
-                    keyboardType = KeyboardType.Email
+                    keyboardType = KeyboardType.Email,
+                    errorMessage = if (email.isNotBlank()) viewModel.validateEmail() else null
                 )
 
                 // Password
@@ -212,7 +215,8 @@ fun RegistrationStep1Screen(
                     onValueChange = { viewModel.password.value = it },
                     label = "Password",
                     icon = Icons.Default.Password,
-                    isPassword = true
+                    isPassword = true,
+                    errorMessage = if (password.isNotBlank()) viewModel.validatePassword() else null
                 )
 
                 // Confirm Password
@@ -221,7 +225,8 @@ fun RegistrationStep1Screen(
                     onValueChange = { viewModel.confirmPassword.value = it },
                     label = "Confirm Password",
                     icon = Icons.Default.LockReset,
-                    isPassword = true
+                    isPassword = true,
+                    errorMessage = if (confirmPassword.isNotBlank()) viewModel.validateConfirmPassword() else null
                 )
             }
 
@@ -289,46 +294,73 @@ private fun InputFieldWithIcon(
     label: String,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     keyboardType: KeyboardType = KeyboardType.Text,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    errorMessage: String? = null,
+    isError: Boolean = errorMessage != null
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.Top
+    Column(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        // Icon on the left
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
-            modifier = Modifier
-                .size(30.dp)
-                .padding(top = 1.dp)
-        )
-
-        // Outlined TextField
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            label = { Text(label) },
-            modifier = Modifier
-                .weight(1f),
-            singleLine = true,
-            visualTransformation = if (isPassword) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            shape = RoundedCornerShape(4.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF111111),
-                unfocusedContainerColor = Color(0xFF111111),
-                focusedBorderColor = com.example.japuraroutef.ui.theme.Primary,
-                unfocusedBorderColor = com.example.japuraroutef.ui.theme.OutlineDark,
-                focusedLabelColor = com.example.japuraroutef.ui.theme.Primary,
-                unfocusedLabelColor = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
-                focusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
-                unfocusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
-                cursorColor = com.example.japuraroutef.ui.theme.Primary
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            // Icon on the left
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = if (isError) Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
+                modifier = Modifier
+                    .size(30.dp)
+                    .padding(top = 1.dp)
             )
-        )
+
+            // Outlined TextField
+            OutlinedTextField(
+                value = value,
+                onValueChange = onValueChange,
+                label = { Text(label) },
+                modifier = Modifier.weight(1f),
+                singleLine = true,
+                isError = isError,
+                visualTransformation = if (isPassword) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
+                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                shape = RoundedCornerShape(4.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFF111111),
+                    unfocusedContainerColor = Color(0xFF111111),
+                    focusedBorderColor = if (isError) Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.Primary,
+                    unfocusedBorderColor = if (isError) Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.OutlineDark,
+                    focusedLabelColor = if (isError) Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.Primary,
+                    unfocusedLabelColor = if (isError) Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
+                    focusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                    unfocusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                    cursorColor = com.example.japuraroutef.ui.theme.Primary,
+                    errorBorderColor = Color(0xFFFF6B6B),
+                    errorLabelColor = Color(0xFFFF6B6B),
+                    errorCursorColor = Color(0xFFFF6B6B)
+                )
+            )
+        }
+
+        // Error message
+        if (errorMessage != null) {
+            Spacer(Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Spacer to align with text field (accounting for icon)
+                Spacer(Modifier.size(30.dp))
+                Text(
+                    text = errorMessage,
+                    color = Color(0xFFFF6B6B),
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
     }
 }
 
@@ -399,7 +431,7 @@ fun RegistrationStep2Screen(
             // Back button
             IconButton(
                 onClick = { viewModel.previousStep() },
-                modifier = Modifier.padding(top = 0.dp, bottom = 8.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
@@ -446,7 +478,7 @@ fun RegistrationStep2Screen(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = "Step 2 of 3: Student Information",
+                    text = "Step 2 of 2: Student Information",
                     style = MaterialTheme.typography.bodyMedium,
                     color = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark
                 )
@@ -468,112 +500,166 @@ fun RegistrationStep2Screen(
                     onValueChange = { viewModel.phoneNumber.value = it },
                     label = "Phone Number",
                     icon = Icons.Default.Phone,
-                    keyboardType = KeyboardType.Phone
+                    keyboardType = KeyboardType.Phone,
+                    errorMessage = if (phoneNumber.isNotBlank()) viewModel.validatePhoneNumber() else null
                 )
 
                 // Address
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.Top
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = null,
-                        tint = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .padding(top = 8.dp)
-                    )
-                    OutlinedTextField(
-                        value = address,
-                        onValueChange = { viewModel.address.value = it },
-                        label = { Text("Address") },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(96.dp),
-                        minLines = 3,
-                        maxLines = 3,
-                        shape = RoundedCornerShape(4.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFF111111),
-                            unfocusedContainerColor = Color(0xFF111111),
-                            focusedBorderColor = com.example.japuraroutef.ui.theme.Primary,
-                            unfocusedBorderColor = com.example.japuraroutef.ui.theme.OutlineDark,
-                            focusedLabelColor = com.example.japuraroutef.ui.theme.Primary,
-                            unfocusedLabelColor = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
-                            focusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
-                            unfocusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
-                            cursorColor = com.example.japuraroutef.ui.theme.Primary
-                        )
-                    )
-                }
-
-                // University Year Dropdown
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CalendarToday,
-                        contentDescription = null,
-                        tint = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .padding(top = 8.dp)
-                    )
-                    ExposedDropdownMenuBox(
-                        expanded = expandedYear,
-                        onExpandedChange = { expandedYear = it },
-                        modifier = Modifier.weight(1f)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.Top
                     ) {
-                        OutlinedTextField(
-                            value = uniYear?.name?.replace("_", " ") ?: "",
-                            onValueChange = {},
-                            readOnly = true,
-                            label = { Text("University Year") },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedYear) },
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = null,
+                            tint = if (address.isNotBlank() && viewModel.validateAddress() != null)
+                                Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp)
-                                .menuAnchor(MenuAnchorType.PrimaryNotEditable, enabled = true),
+                                .size(30.dp)
+                                .padding(top = 1.dp)
+                        )
+                        OutlinedTextField(
+                            value = address,
+                            onValueChange = { viewModel.address.value = it },
+                            label = { Text("Address") },
+                            modifier = Modifier
+                                .weight(1f),
+                            minLines = 3,
+                            maxLines = 3,
+                            isError = address.isNotBlank() && viewModel.validateAddress() != null,
                             shape = RoundedCornerShape(4.dp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedContainerColor = Color(0xFF111111),
                                 unfocusedContainerColor = Color(0xFF111111),
-                                focusedBorderColor = com.example.japuraroutef.ui.theme.Primary,
-                                unfocusedBorderColor = com.example.japuraroutef.ui.theme.OutlineDark,
-                                focusedLabelColor = com.example.japuraroutef.ui.theme.Primary,
-                                unfocusedLabelColor = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
+                                focusedBorderColor = if (address.isNotBlank() && viewModel.validateAddress() != null)
+                                    Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.Primary,
+                                unfocusedBorderColor = if (address.isNotBlank() && viewModel.validateAddress() != null)
+                                    Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.OutlineDark,
+                                focusedLabelColor = if (address.isNotBlank() && viewModel.validateAddress() != null)
+                                    Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.Primary,
+                                unfocusedLabelColor = if (address.isNotBlank() && viewModel.validateAddress() != null)
+                                    Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
                                 focusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
-                                unfocusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark
+                                unfocusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                                cursorColor = com.example.japuraroutef.ui.theme.Primary,
+                                errorBorderColor = Color(0xFFFF6B6B),
+                                errorLabelColor = Color(0xFFFF6B6B),
+                                errorCursorColor = Color(0xFFFF6B6B)
                             )
                         )
-                        ExposedDropdownMenu(
-                            expanded = expandedYear,
-                            onDismissRequest = { expandedYear = false }
-                        ) {
-                            UniYear.entries.forEach { year ->
-                                DropdownMenuItem(
-                                    text = { Text(year.name.replace("_", " ")) },
-                                    onClick = {
-                                        viewModel.uniYear.value = year
-                                        expandedYear = false
-                                    }
+                    }
+
+                    // Address error message
+                    if (address.isNotBlank()) {
+                        val addressError = viewModel.validateAddress()
+                        if (addressError != null) {
+                            Spacer(Modifier.height(4.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Spacer(Modifier.size(24.dp))
+                                Text(
+                                    text = addressError,
+                                    color = Color(0xFFFF6B6B),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    modifier = Modifier.weight(1f)
                                 )
                             }
                         }
                     }
                 }
 
-                // Registration Number
-                InputFieldWithIcon(
-                    value = regNumber,
-                    onValueChange = { viewModel.regNumber.value = it },
-                    label = "Registration Number",
-                    icon = Icons.Default.Info
-                )
+                // University Year Dropdown
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarToday,
+                            contentDescription = null,
+                            tint = if (viewModel.validateUniYear() != null)
+                                Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
+                            modifier = Modifier
+                                .size(30.dp)
+                                .padding(top = 1.dp)
+                        )
+                        ExposedDropdownMenuBox(
+                            expanded = expandedYear,
+                            onExpandedChange = { expandedYear = it },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            OutlinedTextField(
+                                value = uniYear?.name?.replace("_", " ") ?: "",
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("University Year") },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedYear) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .menuAnchor(MenuAnchorType.PrimaryNotEditable, enabled = true),
+                                isError = viewModel.validateUniYear() != null,
+                                shape = RoundedCornerShape(4.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = Color(0xFF111111),
+                                    unfocusedContainerColor = Color(0xFF111111),
+                                    focusedBorderColor = if (viewModel.validateUniYear() != null)
+                                        Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.Primary,
+                                    unfocusedBorderColor = if (viewModel.validateUniYear() != null)
+                                        Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.OutlineDark,
+                                    focusedLabelColor = if (viewModel.validateUniYear() != null)
+                                        Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.Primary,
+                                    unfocusedLabelColor = if (viewModel.validateUniYear() != null)
+                                        Color(0xFFFF6B6B) else com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
+                                    focusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                                    unfocusedTextColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
+                                    errorBorderColor = Color(0xFFFF6B6B),
+                                    errorLabelColor = Color(0xFFFF6B6B)
+                                )
+                            )
+                            ExposedDropdownMenu(
+                                expanded = expandedYear,
+                                onDismissRequest = { expandedYear = false }
+                            ) {
+                                UniYear.entries.forEach { year ->
+                                    DropdownMenuItem(
+                                        text = { Text(year.name.replace("_", " ")) },
+                                        onClick = {
+                                            viewModel.uniYear.value = year
+                                            expandedYear = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // University Year error message
+                    val yearError = viewModel.validateUniYear()
+                    if (yearError != null) {
+                        Spacer(Modifier.height(4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Spacer(Modifier.size(24.dp))
+                            Text(
+                                text = yearError,
+                                color = Color(0xFFFF6B6B),
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
 
                 // Focus Area (conditional)
                 if (viewModel.canSelectFocusArea()) {
@@ -587,8 +673,8 @@ fun RegistrationStep2Screen(
                             contentDescription = null,
                             tint = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
                             modifier = Modifier
-                                .size(24.dp)
-                                .padding(top = 8.dp)
+                                .size(30.dp)
+                                .padding(top = 1.dp)
                         )
                         ExposedDropdownMenuBox(
                             expanded = expandedFocus,
@@ -603,7 +689,6 @@ fun RegistrationStep2Screen(
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedFocus) },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(56.dp)
                                     .menuAnchor(MenuAnchorType.PrimaryNotEditable, enabled = true),
                                 shape = RoundedCornerShape(4.dp),
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -635,12 +720,24 @@ fun RegistrationStep2Screen(
                     }
                 }
 
+
+                // Registration Number
+                InputFieldWithIcon(
+                    value = regNumber,
+                    onValueChange = { viewModel.regNumber.value = it },
+                    label = "Registration Number",
+                    icon = Icons.Default.Info,
+                    errorMessage = if (regNumber.isNotBlank()) viewModel.validateRegNumber() else null
+                )
+
+
                 // NIC Number
                 InputFieldWithIcon(
                     value = nic,
                     onValueChange = { viewModel.nic.value = it },
                     label = "NIC Number",
-                    icon = Icons.Default.AccountBox
+                    icon = Icons.Default.AccountBox,
+                    errorMessage = if (nic.isNotBlank()) viewModel.validateNic() else null
                 )
             }
 
