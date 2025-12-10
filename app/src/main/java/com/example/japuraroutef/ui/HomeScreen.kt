@@ -479,13 +479,52 @@ private fun HomeFeatureTile(tile: HomeActionTile, modifier: Modifier = Modifier 
 }
 
 @Composable
-private fun HomeBottomBar() {
-    NavigationBar {
-        NavigationBarItem(selected = true, onClick = { }, icon = { Icon(Icons.Default.Home, null) }, label = { Text("Home") })
-        NavigationBarItem(selected = false, onClick = { }, icon = { Icon(Icons.Default.Explore, null) }, label = { Text("Explore") })
-        NavigationBarItem(selected = false, onClick = { }, icon = { Icon(Icons.Default.History, null) }, label = { Text("History") })
-        NavigationBarItem(selected = false, onClick = { }, icon = { Icon(Icons.Default.Notifications, null) }, label = { Text("Alerts") })
+fun HomeBottomNavigationBar(
+    selectedTab: Int = 0,
+    onHomeClick: () -> Unit = {},
+    onExploreClick: () -> Unit = {},
+    onHistoryClick: () -> Unit = {},
+    onAlertsClick: () -> Unit = {}
+) {
+    NavigationBar(
+        containerColor = com.example.japuraroutef.ui.theme.SurfaceContainerHighDark,
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding() // Add 3-button navigation padding
+    ) {
+        NavigationBarItem(
+            selected = selectedTab == 0,
+            onClick = onHomeClick,
+            icon = { Icon(Icons.Default.Home, contentDescription = null) },
+            label = { Text("Home") }
+        )
+        NavigationBarItem(
+            selected = selectedTab == 1,
+            onClick = onExploreClick,
+            icon = { Icon(Icons.Default.Explore, contentDescription = null) },
+            label = { Text("Explore") }
+        )
+        NavigationBarItem(
+            selected = selectedTab == 2,
+            onClick = onHistoryClick,
+            icon = { Icon(Icons.Default.History, contentDescription = null) },
+            label = { Text("History") }
+        )
+        NavigationBarItem(
+            selected = selectedTab == 3,
+            onClick = onAlertsClick,
+            icon = { Icon(Icons.Default.Notifications, contentDescription = null) },
+            label = { Text("Alerts") }
+        )
     }
+}
+
+@Composable
+private fun HomeBottomBar() {
+    HomeBottomNavigationBar(
+        selectedTab = 0,
+        onHomeClick = { /* Already on Home */ }
+    )
 }
 
 private data class HomeActionTile(

@@ -137,6 +137,7 @@ class MainActivity : ComponentActivity() {
 
             Screen.Home -> HomeScreen(
                 onNavigateToMap = { currentScreen = Screen.Map },
+                onNavigateToSchedule = { currentScreen = Screen.ClassSchedule },
                 onLogout = {
                     // Clear authentication data
                     tokenManager.clearAuth()
@@ -146,6 +147,10 @@ class MainActivity : ComponentActivity() {
             )
 
             Screen.Map -> MapScreen(
+                onNavigateBack = { currentScreen = Screen.Home }
+            )
+
+            Screen.ClassSchedule -> com.example.japuraroutef.ui.ClassScheduleScreen(
                 onNavigateBack = { currentScreen = Screen.Home }
             )
         }
@@ -158,6 +163,7 @@ class MainActivity : ComponentActivity() {
         data object Registration : Screen()
         data object Home : Screen()
         data object Map : Screen()
+        data object ClassSchedule : Screen()
     }
 
 }
