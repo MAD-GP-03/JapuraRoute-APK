@@ -5,6 +5,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.GET
+import retrofit2.http.Path
 import com.example.japuraroutef.model.RegisterRequest
 import com.example.japuraroutef.model.RegisterResponse
 import com.example.japuraroutef.model.LoginRequest
@@ -13,6 +15,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import com.example.japuraroutef.remote.AuthInterceptor
 import com.example.japuraroutef.local.TokenManager
+import com.example.japuraroutef.model.TimetableResponse
 import java.util.concurrent.TimeUnit
 
 
@@ -22,6 +25,9 @@ interface ApiService {
 
     @POST("/api/auth/login")
     suspend fun loginUser(@Body request: LoginRequest): LoginResponse
+
+    @GET("/api/timetables/year/{uniYear}")
+    suspend fun getTimetableByYear(@Path("uniYear") uniYear: String): TimetableResponse
 
     companion object {
 

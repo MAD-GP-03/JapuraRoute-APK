@@ -15,5 +15,7 @@ data class LoginResponse(
 data class User(
     val id: String,
     val email: String,
-    val name: String?
+    val name: String?,
+    val uniYear: String?,
+    val focusArea: String?
 )

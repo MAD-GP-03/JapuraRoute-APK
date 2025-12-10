@@ -32,7 +32,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.ui.draw.clip
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.japuraroutef.R
+import com.example.japuraroutef.viewmodel.HomeViewModel
+import com.example.japuraroutef.viewmodel.ClassInfo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,9 +44,13 @@ fun HomeScreen(
     onNavigateToMap: () -> Unit = {},
     onNavigateToGrades: () -> Unit = {},
     onNavigateToSchedule: () -> Unit = {},
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    viewModel: HomeViewModel = viewModel()
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val classInfo = viewModel.currentClassInfo.value
+    val greeting = viewModel.getGreeting()
+    val userName = viewModel.userName.value
     val tiles = remember {
         listOf(
             HomeActionTile(
@@ -144,7 +151,11 @@ fun HomeScreen(
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
-                HomeGreetingCard()
+                HomeGreetingCard(
+                    greeting = greeting,
+                    userName = userName,
+                    classInfo = classInfo
+                )
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -302,13 +313,47 @@ private fun ImageCarousel() {
 }
 
 @Composable
-private fun HomeGreetingCard() {
+private fun HomeGreetingCard(
+    greeting: String,
+    userName: String?,
+    classInfo: ClassInfo?
+) {
     val gradient = Brush.linearGradient(
         colors = listOf(
             com.example.japuraroutef.ui.theme.DynamicEveningStart,
             com.example.japuraroutef.ui.theme.DynamicEveningEnd
         )
     )
+
+    // Determine icon based on time of day
+    val greetingIcon = when {
+        greeting.contains("Morning") -> Icons.Default.WbSunny
+        greeting.contains("Afternoon") -> Icons.Default.WbTwilight
+        greeting.contains("Evening") -> Icons.Default.NightsStay
+        else -> Icons.Default.DarkMode
+    }
+
+    // Determine class message and icon
+    val (classMessage, classIcon) = when (classInfo) {
+        is ClassInfo.NextClass -> {
+            val message = "Your next class, ${classInfo.moduleName}, is in ${classInfo.location} at ${classInfo.startTime}."
+            Pair(message, Icons.Default.Schedule)
+        }
+        is ClassInfo.InClass -> {
+            val message = "You're currently in ${classInfo.moduleName} at ${classInfo.location}. Class ends at ${classInfo.endTime}."
+            Pair(message, Icons.Default.School)
+        }
+        is ClassInfo.NoClassToday -> {
+            Pair("No classes scheduled for today. Enjoy your free time!", Icons.Default.FreeBreakfast)
+        }
+        is ClassInfo.ClassesFinished -> {
+            Pair("All classes for today are finished. Great work!", Icons.Default.CheckCircle)
+        }
+        null -> {
+            Pair("Loading your schedule...", Icons.Default.HourglassEmpty)
+        }
+    }
+
     Surface(
         shape = RoundedCornerShape(28.dp), // extra-large radius
         color = Color.Transparent,
@@ -325,28 +370,44 @@ private fun HomeGreetingCard() {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.Top
             ) {
-                // Weather/Time Icon
+                // Time-of-day Icon
                 Icon(
-                    imageVector = Icons.Default.NightsStay,
-                    contentDescription = "Evening",
+                    imageVector = greetingIcon,
+                    contentDescription = greeting,
                     tint = com.example.japuraroutef.ui.theme.Primary,
                     modifier = Modifier.size(48.dp)
                 )
 
                 Column {
+                    // Greeting with optional user name
                     Text(
-                        text = "Good Evening!",
+                        text = if (userName != null) "$greeting, $userName!" else "$greeting!",
                         color = Color.White, // white for better contrast
                         fontSize = 30.sp, // text-3xl
                         fontWeight = FontWeight.Normal
                     )
-                    Spacer(Modifier.height(8.dp)) // mt-2
-                    Text(
-                        text = "Your next class, Quantum Physics, is in Room 301 at 10:00 AM.",
-                        color = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
-                        fontSize = 14.sp, // text-sm
-                        lineHeight = 22.sp // leading-relaxed
-                    )
+
+                    Spacer(Modifier.height(12.dp)) // mt-2
+
+                    // Class information with icon
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = classIcon,
+                            contentDescription = null,
+                            tint = com.example.japuraroutef.ui.theme.Primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+
+                        Text(
+                            text = classMessage,
+                            color = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
+                            fontSize = 14.sp, // text-sm
+                            lineHeight = 22.sp // leading-relaxed
+                        )
+                    }
                 }
             }
         }

@@ -14,6 +14,8 @@ class TokenManager(context: Context) {
         private const val USER_ID_KEY = "user_id"
         private const val USER_EMAIL_KEY = "user_email"
         private const val USER_NAME_KEY = "user_name"
+        private const val USER_UNI_YEAR_KEY = "user_uni_key"
+        private const val USER_FOCUS_AREA_KEY = "user_focus_area_key"
 
         @Volatile
         private var INSTANCE: TokenManager? = null
@@ -44,6 +46,8 @@ class TokenManager(context: Context) {
             .putString(USER_ID_KEY, user.id)
             .putString(USER_EMAIL_KEY, user.email)
             .putString(USER_NAME_KEY, user.name)
+            .putString(USER_UNI_YEAR_KEY, user.uniYear)
+            .putString(USER_FOCUS_AREA_KEY, user.focusArea)
             .apply()
     }
 
@@ -51,9 +55,12 @@ class TokenManager(context: Context) {
         val id = prefs.getString(USER_ID_KEY, null)
         val email = prefs.getString(USER_EMAIL_KEY, null)
         val name = prefs.getString(USER_NAME_KEY, null)
+        val uniYear = prefs.getString(USER_UNI_YEAR_KEY, null)
+        val focusArea = prefs.getString(USER_FOCUS_AREA_KEY, null)
+
 
         return if (id != null && email != null) {
-            User(id, email, name)
+            User(id, email, name, uniYear,focusArea)
         } else {
             null
         }
@@ -64,6 +71,8 @@ class TokenManager(context: Context) {
             .remove(USER_ID_KEY)
             .remove(USER_EMAIL_KEY)
             .remove(USER_NAME_KEY)
+            .remove(USER_UNI_YEAR_KEY)
+            .remove(USER_FOCUS_AREA_KEY)
             .apply()
     }
 
@@ -74,5 +83,25 @@ class TokenManager(context: Context) {
 
     fun isLoggedIn(): Boolean {
         return getToken() != null
+    }
+
+    fun getUserName(): String? {
+        return prefs.getString(USER_NAME_KEY, null)
+    }
+
+    fun getUserEmail(): String? {
+        return prefs.getString(USER_EMAIL_KEY, null)
+    }
+
+    fun getUserUniYear(): String? {
+        return prefs.getString(USER_UNI_YEAR_KEY, null)
+    }
+
+    fun getUserFocusArea(): String? {
+        return prefs.getString(USER_FOCUS_AREA_KEY, null)
+    }
+
+    fun getUserId(): String? {
+        return prefs.getString(USER_ID_KEY, null)
     }
 }

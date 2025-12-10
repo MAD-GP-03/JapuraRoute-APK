@@ -277,12 +277,12 @@ fun RegistrationStep1Screen(
                     Text(
                         text = "Already have an account? ",
                         color = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
-                        style = MaterialTheme.typography.bodySmall
+                        style  = MaterialTheme.typography.bodyMedium,
                     )
                     Text(
                         text = "Sign In",
                         color = com.example.japuraroutef.ui.theme.Primary,
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.clickable { onBackToLogin() }
                     )
