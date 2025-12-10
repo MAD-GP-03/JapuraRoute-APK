@@ -2,10 +2,13 @@ package com.example.japuraroutef.utils
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
@@ -15,6 +18,11 @@ object ToastManager {
         extraBufferCapacity = 1
     )
     val toastFlow = _toastFlow.asSharedFlow()
+
+    fun getInstance(context: android.content.Context): ToastManager {
+        // Since this is already a singleton object, just return this
+        return this
+    }
 
     fun showSuccess(message: String) {
         android.util.Log.d("ToastManager", "Showing success message: $message")
@@ -71,6 +79,8 @@ fun ToastHost() {
         hostState = snackbarHostState,
         modifier = Modifier
             .fillMaxWidth()
+            .statusBarsPadding()
+            .padding(top = 16.dp)
             .navigationBarsPadding()
     ) { snackbarData ->
         Snackbar(

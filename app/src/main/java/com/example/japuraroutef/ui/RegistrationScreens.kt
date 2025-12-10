@@ -21,20 +21,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import com.example.japuraroutef.model.FocusArea
 import com.example.japuraroutef.model.UniYear
 import com.example.japuraroutef.viewmodel.RegistrationState
 import com.example.japuraroutef.viewmodel.RegistrationViewModel
-import com.example.japuraroutef.utils.ToastHost
 
 @Composable
 fun RegistrationScreen(
+    viewModel: RegistrationViewModel = viewModel(),
     onRegistrationSuccess: (String) -> Unit,
     onBackToLogin: () -> Unit
 ) {
-    val viewModel: RegistrationViewModel = viewModel()
     val currentStep by viewModel.currentStep.collectAsState()
     val registrationState by viewModel.registrationState.collectAsState()
 
@@ -45,25 +43,14 @@ fun RegistrationScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        when (currentStep) {
-            1 -> RegistrationStep1Screen(
-                viewModel = viewModel,
-                onBackToLogin = onBackToLogin
-            )
-            2 -> RegistrationStep2Screen(
-                viewModel = viewModel
-            )
-        }
-
-        // Position ToastHost at the bottom for proper snackbar display
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-        ) {
-            ToastHost()
-        }
+    when (currentStep) {
+        1 -> RegistrationStep1Screen(
+            viewModel = viewModel,
+            onBackToLogin = onBackToLogin
+        )
+        2 -> RegistrationStep2Screen(
+            viewModel = viewModel
+        )
     }
 }
 
@@ -450,7 +437,7 @@ fun RegistrationStep2Screen(
             // Back button
             IconButton(
                 onClick = { viewModel.previousStep() },
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBackIos,

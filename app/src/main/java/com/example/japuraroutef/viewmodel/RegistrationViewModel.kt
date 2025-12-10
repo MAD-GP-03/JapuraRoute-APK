@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RegistrationViewModel : ViewModel() {
-
-    private val authRepository = AuthRepository()
+class RegistrationViewModel(
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
     private val _registrationState = MutableStateFlow<RegistrationState>(RegistrationState.Idle)
     val registrationState: StateFlow<RegistrationState> = _registrationState
@@ -224,7 +224,7 @@ class RegistrationViewModel : ViewModel() {
             val result = authRepository.register(request)
             _registrationState.value = if (result.isSuccess) {
                 android.util.Log.d("RegistrationViewModel", "Registration successful!")
-                ToastManager.showSuccess("Account created successfully! Welcome to FOTGo!")
+                // Success message will be shown by MainActivity after redirect to login
                 RegistrationState.Success(result.getOrNull()!!)
             } else {
                 val exception = result.exceptionOrNull()

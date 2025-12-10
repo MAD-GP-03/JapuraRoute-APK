@@ -40,7 +40,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onNavigateToMap: () -> Unit = {},
     onNavigateToGrades: () -> Unit = {},
-    onNavigateToSchedule: () -> Unit = {}
+    onNavigateToSchedule: () -> Unit = {},
+    onLogout: () -> Unit = {}
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val tiles = remember {
@@ -127,7 +128,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            HomeTopAppBar()
+            HomeTopAppBar(onLogout = onLogout)
 
             LazyVerticalGrid(
                 modifier = Modifier
@@ -136,7 +137,7 @@ fun HomeScreen(
                 columns = GridCells.Fixed(3),
                 horizontalArrangement = Arrangement.spacedBy(16.dp), // gap-4
                 verticalArrangement = Arrangement.spacedBy(24.dp), // space-y-6
-                contentPadding = PaddingValues(top = 4.dp, bottom = 16.dp)
+                contentPadding = PaddingValues(top = 4.dp, bottom = 64.dp) // Space for 3-button navigation bar
             ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 ImageCarousel()
@@ -175,7 +176,7 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeTopAppBar() {
+private fun HomeTopAppBar(onLogout: () -> Unit = {}) {
     val colors = MaterialTheme.colorScheme
     Surface(
         color = Color.Transparent,
@@ -226,8 +227,8 @@ private fun HomeTopAppBar() {
                     color = colors.surfaceVariant,
                     tonalElevation = 4.dp
                 ) {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Default.AccountCircle, contentDescription = "Profile", tint = colors.onSurface)
+                    IconButton(onClick = onLogout) {
+                        Icon(Icons.Default.AccountCircle, contentDescription = "Logout", tint = colors.onSurface)
                     }
                 }
             }
