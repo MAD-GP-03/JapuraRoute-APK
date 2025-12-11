@@ -365,49 +365,52 @@ private fun HomeGreetingCard(
                 .background(gradient)
                 .padding(24.dp) // p-6 = 24px
         ) {
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.Top
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Time-of-day Icon
-                Icon(
-                    imageVector = greetingIcon,
-                    contentDescription = greeting,
-                    tint = com.example.japuraroutef.ui.theme.Primary,
-                    modifier = Modifier.size(48.dp)
-                )
-
-                Column {
-                    // Greeting with optional user name
-                    Text(
-                        text = if (userName != null) "$greeting, $userName!" else "$greeting!",
-                        color = Color.White, // white for better contrast
-                        fontSize = 30.sp, // text-3xl
-                        fontWeight = FontWeight.Normal
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    // Time-of-day Icon
+                    Icon(
+                        imageVector = greetingIcon,
+                        contentDescription = greeting,
+                        tint = com.example.japuraroutef.ui.theme.Primary,
+                        modifier = Modifier.size(48.dp)
                     )
 
-                    Spacer(Modifier.height(12.dp)) // mt-2
+                    // Greeting with optional user name
+                    Text(
+                        text = if (userName != null) {
+                            val capitalizedName = userName.lowercase().replaceFirstChar { it.uppercase() }
+                            "$greeting, $capitalizedName!"
+                        } else {
+                            "$greeting!"
+                        },
+                        color = Color.White, // white for better contrast
+                        fontSize = 30.sp, // text-3xl
+                        fontWeight = FontWeight.Normal,
+                        lineHeight = 30.sp // 1.27 line height ratio for better readability
+                    )
+                }
 
-                    // Class information with icon
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = classIcon,
-                            contentDescription = null,
-                            tint = com.example.japuraroutef.ui.theme.Primary,
-                            modifier = Modifier.size(20.dp)
-                        )
+                Spacer(Modifier.height(12.dp))
 
-                        Text(
-                            text = classMessage,
-                            color = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
-                            fontSize = 14.sp, // text-sm
-                            lineHeight = 22.sp // leading-relaxed
-                        )
-                    }
+                // Class information with icon - centered
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = classMessage,
+                        color = com.example.japuraroutef.ui.theme.OnSurfaceVariantDark,
+                        fontSize = 14.sp, // text-sm
+                        lineHeight = 22.sp // leading-relaxed
+                    )
                 }
             }
         }

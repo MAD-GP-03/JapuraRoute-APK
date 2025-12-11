@@ -45,7 +45,7 @@ class TokenManager(context: Context) {
         prefs.edit()
             .putString(USER_ID_KEY, user.id)
             .putString(USER_EMAIL_KEY, user.email)
-            .putString(USER_NAME_KEY, user.name)
+            .putString(USER_NAME_KEY, user.username)
             .putString(USER_UNI_YEAR_KEY, user.uniYear)
             .putString(USER_FOCUS_AREA_KEY, user.focusArea)
             .apply()
