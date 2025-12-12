@@ -18,14 +18,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.japuraroutef.api.ApiService
 import com.example.japuraroutef.local.TokenManager
 import com.example.japuraroutef.repository.AuthRepository
+import com.example.japuraroutef.repository.GpaRepository
 import com.example.japuraroutef.ui.ExtendedSplashScreen
 import com.example.japuraroutef.ui.HomeScreen
 import com.example.japuraroutef.ui.MapScreen
 import com.example.japuraroutef.ui.RegistrationScreen
+import com.example.japuraroutef.ui.GpaOverviewScreen
+import com.example.japuraroutef.ui.GpaSemesterDetailScreen
 import com.example.japuraroutef.ui.screens.GetStartedScreen
 import com.example.japuraroutef.ui.screens.LoginScreen
 import com.example.japuraroutef.ui.theme.JapuraRouteFTheme
 import com.example.japuraroutef.ui.theme.ThemePreferences
+import com.example.japuraroutef.model.SemesterId
+import com.example.japuraroutef.model.FocusArea
+import com.example.japuraroutef.viewmodel.GpaViewModel
+import com.example.japuraroutef.ui.ClassScheduleScreen
 import com.example.japuraroutef.utils.ToastManager
 import com.example.japuraroutef.viewmodel.LoginViewModel
 import com.example.japuraroutef.viewmodel.LoginViewModelFactory
@@ -83,6 +90,10 @@ class MainActivity : ComponentActivity() {
         val apiService = ApiService.create(this)
         val authRepository = AuthRepository(apiService, tokenManager)
 
+        // Create single GpaViewModel instance to prevent recreation
+        val gpaRepository = remember { GpaRepository(apiService) }
+        val sharedGpaViewModel = remember { GpaViewModel(gpaRepository) }
+
         when (currentScreen) {
             Screen.Splash -> ExtendedSplashScreen(
                 onSplashFinished = {
@@ -138,6 +149,7 @@ class MainActivity : ComponentActivity() {
             Screen.Home -> HomeScreen(
                 onNavigateToMap = { currentScreen = Screen.Map },
                 onNavigateToSchedule = { currentScreen = Screen.ClassSchedule },
+                onNavigateToGrades = { currentScreen = Screen.GpaOverview },
                 onLogout = {
                     // Clear authentication data
                     tokenManager.clearAuth()
@@ -153,6 +165,37 @@ class MainActivity : ComponentActivity() {
             Screen.ClassSchedule -> com.example.japuraroutef.ui.ClassScheduleScreen(
                 onNavigateBack = { currentScreen = Screen.Home }
             )
+
+            Screen.GpaOverview -> {
+                GpaOverviewScreen(
+                    viewModel = sharedGpaViewModel,
+                    onNavigateBack = { currentScreen = Screen.Home },
+                    onNavigateToDetail = { semesterId ->
+                        currentScreen = Screen.GpaSemesterDetail(semesterId)
+                    }
+                )
+            }
+
+            is Screen.GpaSemesterDetail -> {
+                val detailScreen = currentScreen as Screen.GpaSemesterDetail
+
+                // Get user's focus area from TokenManager
+                val userFocusAreaString = tokenManager.getUserFocusArea()
+                val userFocusArea = userFocusAreaString?.let {
+                    try {
+                        FocusArea.valueOf(it)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+
+                GpaSemesterDetailScreen(
+                    viewModel = sharedGpaViewModel,
+                    semesterId = detailScreen.semesterId,
+                    onNavigateBack = { currentScreen = Screen.GpaOverview },
+                    userFocusArea = userFocusArea
+                )
+            }
         }
     }
 
@@ -164,6 +207,8 @@ class MainActivity : ComponentActivity() {
         data object Home : Screen()
         data object Map : Screen()
         data object ClassSchedule : Screen()
+        data object GpaOverview : Screen()
+        data class GpaSemesterDetail(val semesterId: SemesterId) : Screen()
     }
 
 }

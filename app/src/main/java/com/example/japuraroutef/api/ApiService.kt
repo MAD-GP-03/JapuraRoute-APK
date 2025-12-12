@@ -3,14 +3,12 @@ package com.example.japuraroutef.api
 import android.content.Context
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 import com.example.japuraroutef.model.RegisterRequest
 import com.example.japuraroutef.model.RegisterResponse
 import com.example.japuraroutef.model.LoginRequest
 import com.example.japuraroutef.model.LoginResponse
+import com.example.japuraroutef.model.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import com.example.japuraroutef.remote.AuthInterceptor
@@ -28,6 +26,27 @@ interface ApiService {
 
     @GET("/api/timetables/year/{uniYear}")
     suspend fun getTimetableByYear(@Path("uniYear") uniYear: String): TimetableResponse
+
+    // Module endpoints
+    @GET("/api/modules")
+    suspend fun getAllModules(): ModulesApiResponse
+
+    // GPA endpoints
+    @POST("/api/student/semester-gpa")
+    suspend fun createOrUpdateSemesterGpa(@Body request: CreateSemesterGpaRequest): GpaApiResponse<SemesterGpaResponse>
+
+    @GET("/api/student/semester-gpa")
+    suspend fun getAllSemesterGpas(): GpaApiResponse<List<SemesterGpaResponse>>
+
+    @GET("/api/student/semester-gpa/semester/{semesterId}")
+    suspend fun getSemesterGpa(@Path("semesterId") semesterId: String): GpaApiResponse<SemesterGpaResponse>
+
+    @GET("/api/student/semester-gpa/cgpa")
+    suspend fun getOverallCgpa(): GpaApiResponse<CgpaResponse>
+
+
+    @DELETE("/api/student/semester-gpa/semester/{semesterId}")
+    suspend fun deleteSemesterGpa(@Path("semesterId") semesterId: String): GpaApiResponse<Unit>
 
     companion object {
 
