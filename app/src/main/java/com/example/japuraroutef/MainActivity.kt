@@ -172,7 +172,15 @@ class MainActivity : ComponentActivity() {
                     onNavigateBack = { currentScreen = Screen.Home },
                     onNavigateToDetail = { semesterId ->
                         currentScreen = Screen.GpaSemesterDetail(semesterId)
-                    }
+                    },
+                    onNavigateToStatistics = { currentScreen = Screen.GpaStatistics }
+                )
+            }
+
+            Screen.GpaStatistics -> {
+                com.example.japuraroutef.ui.GpaStatisticsScreen(
+                    viewModel = sharedGpaViewModel,
+                    onNavigateBack = { currentScreen = Screen.GpaOverview }
                 )
             }
 
@@ -208,6 +216,7 @@ class MainActivity : ComponentActivity() {
         data object Map : Screen()
         data object ClassSchedule : Screen()
         data object GpaOverview : Screen()
+        data object GpaStatistics : Screen()
         data class GpaSemesterDetail(val semesterId: SemesterId) : Screen()
     }
 

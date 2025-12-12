@@ -118,6 +118,27 @@ class GpaRepository(private val apiService: ApiService) {
         }
     }
 
+    suspend fun getBatchAverage(): Result<BatchAverageResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getBatchAverage()
+                if (response.status && response.data != null) {
+                    Result.success(response.data)
+                } else {
+                    Result.failure(Exception(response.message ?: "Failed to fetch batch average"))
+                }
+            } catch (e: HttpException) {
+                Log.e("GpaRepository", "HTTP ${e.code()}: ${e.message()}")
+                val errorBody = e.response()?.errorBody()?.string()
+                Log.e("GpaRepository", "Error body: $errorBody")
+                Result.failure(Exception("HTTP ${e.code()}: $errorBody"))
+            } catch (e: Exception) {
+                Log.e("GpaRepository", "Error fetching batch average", e)
+                Result.failure(e)
+            }
+        }
+    }
+
     suspend fun deleteSemesterGpa(semesterId: SemesterId): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {

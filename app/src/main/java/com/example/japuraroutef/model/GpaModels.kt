@@ -101,6 +101,14 @@ data class CgpaResponse(
     val cgpa: Float
 )
 
+data class BatchAverageResponse(
+    val uniYear: String,
+    val totalStudents: Int,
+    val studentsWithGpa: Int,
+    val averageGpa: Float,
+    val studentsWithoutGpa: Int
+)
+
 data class GpaApiResponse<T>(
     val status: Boolean,
     val message: String?,
@@ -125,7 +133,7 @@ data class Module(
         return Subject(
             subjectName = "$moduleCode - $moduleName",
             credits = credits.toFloat(),
-            grade = "" // Empty grade, to be filled by user
+            grade = "A+" // Default grade for preloaded modules
         )
     }
 }

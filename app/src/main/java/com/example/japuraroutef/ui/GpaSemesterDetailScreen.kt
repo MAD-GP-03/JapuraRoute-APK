@@ -51,7 +51,7 @@ fun GpaSemesterDetailScreen(
     val isLoading by viewModel.isLoading
     val needsFocusArea by viewModel.needsFocusAreaSelection
 
-    // Debug: Track subjects changes
+    // Debug: Track subjects changesgrade
     LaunchedEffect(subjects.size) {
         android.util.Log.d("GpaSemesterDetail", "Subjects size changed: ${subjects.size}")
         android.util.Log.d("GpaSemesterDetail", "Subjects: ${subjects.map { it.subjectName }}")
@@ -546,7 +546,7 @@ private fun SubjectCard(
                     modifier = Modifier.weight(1f)
                 ) {
                     OutlinedTextField(
-                        value = if (subject.grade.isNotEmpty()) subject.grade else "Select",
+                        value = subject.grade,
                         onValueChange = {},
                         readOnly = true,
                         label = { Text("Grade", style = MaterialTheme.typography.labelSmall) },

@@ -44,6 +44,8 @@ interface ApiService {
     @GET("/api/student/semester-gpa/cgpa")
     suspend fun getOverallCgpa(): GpaApiResponse<CgpaResponse>
 
+    @GET("/api/student/semester-gpa/batch-average")
+    suspend fun getBatchAverage(): GpaApiResponse<BatchAverageResponse>
 
     @DELETE("/api/student/semester-gpa/semester/{semesterId}")
     suspend fun deleteSemesterGpa(@Path("semesterId") semesterId: String): GpaApiResponse<Unit>

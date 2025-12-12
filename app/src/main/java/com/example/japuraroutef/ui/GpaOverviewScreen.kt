@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -34,7 +35,8 @@ import java.util.Locale
 fun GpaOverviewScreen(
     viewModel: GpaViewModel,
     onNavigateBack: () -> Unit,
-    onNavigateToDetail: (SemesterId) -> Unit
+    onNavigateToDetail: (SemesterId) -> Unit,
+    onNavigateToStatistics: () -> Unit = {}
 ) {
     var showAddSemesterDialog by remember { mutableStateOf(false) }
     var semesterToDelete by remember { mutableStateOf<com.example.japuraroutef.model.SemesterGpaResponse?>(null) }
@@ -64,10 +66,25 @@ fun GpaOverviewScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
                             contentDescription = "Back",
                             tint = OnSurfaceDark
                         )
+                    }
+                },
+                actions = {
+                    Surface(
+                        shape = CircleShape,
+                        color = PrimaryContainerDark,
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        IconButton(onClick = onNavigateToStatistics) {
+                            Icon(
+                                imageVector = Icons.Default.ShowChart,
+                                contentDescription = "Statistics",
+                                tint = Primary
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
