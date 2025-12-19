@@ -39,10 +39,12 @@ class GpaViewModel(private val repository: GpaRepository) : ViewModel() {
 
     init {
         Log.d("GpaViewModel", "ViewModel initialized - hashCode: ${this.hashCode()}")
-        // Only load semester GPAs on init
-        // Modules will be loaded manually from GpaOverviewScreen
-        // CGPA will be calculated on frontend
-        loadAllSemesterGpas()
+    }
+
+    fun fetchAllData() {
+        viewModelScope.launch {
+            loadAllSemesterGpas()
+        }
     }
 
     fun loadAllModules() {

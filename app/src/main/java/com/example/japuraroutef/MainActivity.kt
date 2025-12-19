@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +23,7 @@ import com.example.japuraroutef.repository.GpaRepository
 import com.example.japuraroutef.ui.ExtendedSplashScreen
 import com.example.japuraroutef.ui.HomeScreen
 import com.example.japuraroutef.ui.MapScreen
+import com.example.japuraroutef.ui.ClassScheduleScreen
 import com.example.japuraroutef.ui.RegistrationScreen
 import com.example.japuraroutef.ui.GpaOverviewScreen
 import com.example.japuraroutef.ui.GpaSemesterDetailScreen
@@ -32,12 +34,13 @@ import com.example.japuraroutef.ui.theme.ThemePreferences
 import com.example.japuraroutef.model.SemesterId
 import com.example.japuraroutef.model.FocusArea
 import com.example.japuraroutef.viewmodel.GpaViewModel
-import com.example.japuraroutef.ui.ClassScheduleScreen
 import com.example.japuraroutef.utils.ToastManager
+import com.example.japuraroutef.utils.AuthStateManager
 import com.example.japuraroutef.viewmodel.LoginViewModel
 import com.example.japuraroutef.viewmodel.LoginViewModelFactory
 import com.example.japuraroutef.viewmodel.RegistrationViewModel
 import com.example.japuraroutef.viewmodel.RegistrationViewModelFactory
+import com.example.japuraroutef.viewmodel.GpaViewModelFactory
 
 class MainActivity : ComponentActivity() {
     private lateinit var themePreferences: ThemePreferences
@@ -78,8 +81,8 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun AppNavigation() {
-        // Check authentication status after splash
-        val isAuthenticated = tokenManager.isLoggedIn()
+        // Track authentication status as state
+        var isAuthenticated by remember { mutableStateOf(tokenManager.isLoggedIn()) }
 
         var currentScreen by remember {
             mutableStateOf<Screen>(Screen.Splash)
@@ -90,13 +93,41 @@ class MainActivity : ComponentActivity() {
         val apiService = ApiService.create(this)
         val authRepository = AuthRepository(apiService, tokenManager)
 
-        // Create single GpaViewModel instance to prevent recreation
+        // Create single GpaViewModel instance only when authenticated
         val gpaRepository = remember { GpaRepository(apiService) }
-        val sharedGpaViewModel = remember { GpaViewModel(gpaRepository) }
+        val sharedGpaViewModel: GpaViewModel? = if (isAuthenticated) {
+            viewModel(
+                factory = GpaViewModelFactory(gpaRepository),
+                key = "gpa_vm_${tokenManager.getToken()}" // Unique key per user
+            )
+        } else {
+            null
+        }
+
+        // Fetch data when user logs in
+        LaunchedEffect(isAuthenticated) {
+            if (isAuthenticated) {
+                sharedGpaViewModel?.fetchAllData()
+            }
+        }
+
+        // Listen for unauthorized (401/403) events from API interceptor
+        LaunchedEffect(Unit) {
+            AuthStateManager.logoutEvent.collect {
+                // Clear authentication state
+                isAuthenticated = false
+                // Navigate to GetStarted screen
+                currentScreen = Screen.GetStarted
+                // Show toast message
+                toastManager.showError("Session expired. Please sign in again.")
+            }
+        }
 
         when (currentScreen) {
             Screen.Splash -> ExtendedSplashScreen(
                 onSplashFinished = {
+                    // Check auth state when splash finishes
+                    isAuthenticated = tokenManager.isLoggedIn()
                     currentScreen = if (isAuthenticated) {
                         Screen.Home
                     } else {
@@ -122,6 +153,8 @@ class MainActivity : ComponentActivity() {
                         currentScreen = Screen.Registration
                     },
                     onLoginSuccess = {
+                        // Update authentication state to trigger ViewModel creation and data fetching
+                        isAuthenticated = true
                         currentScreen = Screen.Home
                     }
                 )
@@ -153,6 +186,8 @@ class MainActivity : ComponentActivity() {
                 onLogout = {
                     // Clear authentication data
                     tokenManager.clearAuth()
+                    // Update authentication state (this will destroy the ViewModel)
+                    isAuthenticated = false
                     // Navigate to GetStarted screen
                     currentScreen = Screen.GetStarted
                 }
@@ -162,47 +197,53 @@ class MainActivity : ComponentActivity() {
                 onNavigateBack = { currentScreen = Screen.Home }
             )
 
-            Screen.ClassSchedule -> com.example.japuraroutef.ui.ClassScheduleScreen(
+            Screen.ClassSchedule -> ClassScheduleScreen(
                 onNavigateBack = { currentScreen = Screen.Home }
             )
 
             Screen.GpaOverview -> {
-                GpaOverviewScreen(
-                    viewModel = sharedGpaViewModel,
-                    onNavigateBack = { currentScreen = Screen.Home },
-                    onNavigateToDetail = { semesterId ->
-                        currentScreen = Screen.GpaSemesterDetail(semesterId)
-                    },
-                    onNavigateToStatistics = { currentScreen = Screen.GpaStatistics }
-                )
+                sharedGpaViewModel?.let { viewModel ->
+                    GpaOverviewScreen(
+                        viewModel = viewModel,
+                        onNavigateBack = { currentScreen = Screen.Home },
+                        onNavigateToDetail = { semesterId ->
+                            currentScreen = Screen.GpaSemesterDetail(semesterId)
+                        },
+                        onNavigateToStatistics = { currentScreen = Screen.GpaStatistics }
+                    )
+                }
             }
 
             Screen.GpaStatistics -> {
-                com.example.japuraroutef.ui.GpaStatisticsScreen(
-                    viewModel = sharedGpaViewModel,
-                    onNavigateBack = { currentScreen = Screen.GpaOverview }
-                )
+                sharedGpaViewModel?.let { viewModel ->
+                    com.example.japuraroutef.ui.GpaStatisticsScreen(
+                        viewModel = viewModel,
+                        onNavigateBack = { currentScreen = Screen.GpaOverview }
+                    )
+                }
             }
 
             is Screen.GpaSemesterDetail -> {
-                val detailScreen = currentScreen as Screen.GpaSemesterDetail
+                sharedGpaViewModel?.let { viewModel ->
+                    val detailScreen = currentScreen as Screen.GpaSemesterDetail
 
-                // Get user's focus area from TokenManager
-                val userFocusAreaString = tokenManager.getUserFocusArea()
-                val userFocusArea = userFocusAreaString?.let {
-                    try {
-                        FocusArea.valueOf(it)
-                    } catch (e: Exception) {
-                        null
+                    // Get user's focus area from TokenManager
+                    val userFocusAreaString = tokenManager.getUserFocusArea()
+                    val userFocusArea = userFocusAreaString?.let {
+                        try {
+                            FocusArea.valueOf(it)
+                        } catch (e: Exception) {
+                            null
+                        }
                     }
-                }
 
-                GpaSemesterDetailScreen(
-                    viewModel = sharedGpaViewModel,
-                    semesterId = detailScreen.semesterId,
-                    onNavigateBack = { currentScreen = Screen.GpaOverview },
-                    userFocusArea = userFocusArea
-                )
+                    GpaSemesterDetailScreen(
+                        viewModel = viewModel,
+                        semesterId = detailScreen.semesterId,
+                        onNavigateBack = { currentScreen = Screen.GpaOverview },
+                        userFocusArea = userFocusArea
+                    )
+                }
             }
         }
     }

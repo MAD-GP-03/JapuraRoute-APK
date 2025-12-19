@@ -12,8 +12,13 @@ import com.example.japuraroutef.model.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import com.example.japuraroutef.remote.AuthInterceptor
+import com.example.japuraroutef.remote.UnauthorizedInterceptor
 import com.example.japuraroutef.local.TokenManager
 import com.example.japuraroutef.model.TimetableResponse
+import com.example.japuraroutef.utils.AuthStateManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 
@@ -60,9 +65,23 @@ interface ApiService {
                 level = HttpLoggingInterceptor.Level.BODY
             }
 
+            val tokenManager = TokenManager.getInstance(context)
+
+            // Interceptor to handle 401/403 responses
+            val unauthorizedInterceptor = UnauthorizedInterceptor(
+                tokenManager = tokenManager,
+                onUnauthorized = {
+                    // Trigger logout event when unauthorized
+                    CoroutineScope(Dispatchers.Main).launch {
+                        AuthStateManager.triggerLogout()
+                    }
+                }
+            )
+
             return OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
-                .addInterceptor(AuthInterceptor(TokenManager(context)))
+                .addInterceptor(AuthInterceptor(tokenManager))
+                .addInterceptor(unauthorizedInterceptor) // Add unauthorized handler
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
