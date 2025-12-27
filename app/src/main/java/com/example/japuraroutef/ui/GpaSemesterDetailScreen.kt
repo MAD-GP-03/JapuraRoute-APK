@@ -88,8 +88,9 @@ fun GpaSemesterDetailScreen(
                 title = {
                     Text(
                         text = "Semester Details",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = OnSurfaceDark
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Normal,
+                        color = com.example.japuraroutef.ui.theme.OnSurfaceDark
                     )
                 },
                 navigationIcon = {

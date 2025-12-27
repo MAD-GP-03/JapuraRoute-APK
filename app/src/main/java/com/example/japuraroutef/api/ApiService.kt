@@ -55,6 +55,22 @@ interface ApiService {
     @DELETE("/api/student/semester-gpa/semester/{semesterId}")
     suspend fun deleteSemesterGpa(@Path("semesterId") semesterId: String): GpaApiResponse<Unit>
 
+    // Place endpoints
+    @GET("/api/places")
+    suspend fun getAllPlaces(): PlaceApiResponse<List<PlaceResponseDto>>
+
+    @GET("/api/places/{id}")
+    suspend fun getPlaceById(@Path("id") placeId: String): PlaceApiResponse<PlaceResponseDto>
+
+    @GET("/api/places/search")
+    suspend fun searchPlaces(@Query("query") query: String): PlaceApiResponse<List<PlaceResponseDto>>
+
+    @GET("/api/places/search/tag")
+    suspend fun searchPlacesByTag(@Query("tag") tag: String): PlaceApiResponse<List<PlaceResponseDto>>
+
+    @GET("/api/places/search/name")
+    suspend fun searchPlacesByName(@Query("name") name: String): PlaceApiResponse<List<PlaceResponseDto>>
+
     companion object {
 
         private const val BASE_URL = "http://139.59.5.106:8080/"

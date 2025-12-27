@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -121,7 +122,7 @@ private fun ClassScheduleTopBar(
         color = com.example.japuraroutef.ui.theme.SurfaceDark,
         modifier = Modifier
             .fillMaxWidth()
-            .statusBarsPadding() // Add status bar padding
+            .statusBarsPadding()
     ) {
         Row(
             modifier = Modifier
@@ -140,14 +141,15 @@ private fun ClassScheduleTopBar(
                     modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
                         contentDescription = "Back",
-                        tint = com.example.japuraroutef.ui.theme.OnSurfaceDark
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
                 Text(
                     text = "Class Schedule",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Normal,
                     color = com.example.japuraroutef.ui.theme.OnSurfaceDark
                 )
             }

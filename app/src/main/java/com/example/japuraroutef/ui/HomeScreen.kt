@@ -44,6 +44,7 @@ fun HomeScreen(
     onNavigateToMap: () -> Unit = {},
     onNavigateToGrades: () -> Unit = {},
     onNavigateToSchedule: () -> Unit = {},
+    onNavigateToPlaces: () -> Unit = {},
     onLogout: () -> Unit = {},
     viewModel: HomeViewModel = viewModel()
 ) {
@@ -115,12 +116,13 @@ fun HomeScreen(
                 iconBackground = Color.Transparent
             ),
             HomeActionTile(
-                title = "Services",
+                title = "Places",
                 icon = Icons.Default.Build,
                 background = com.example.japuraroutef.ui.theme.SurfaceContainerHighDark,
                 textColor = com.example.japuraroutef.ui.theme.OnSurfaceDark,
                 iconTint = colorScheme.primary,
-                iconBackground = Color.Transparent
+                iconBackground = Color.Transparent,
+                onClick = onNavigateToPlaces
             )
         )
     }

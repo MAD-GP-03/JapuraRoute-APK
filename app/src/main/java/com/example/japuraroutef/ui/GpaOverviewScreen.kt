@@ -59,8 +59,9 @@ fun GpaOverviewScreen(
                 title = {
                     Text(
                         text = "GPA Overview",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = OnSurfaceDark
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Normal,
+                        color = com.example.japuraroutef.ui.theme.OnSurfaceDark
                     )
                 },
                 navigationIcon = {
@@ -68,7 +69,7 @@ fun GpaOverviewScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
                             contentDescription = "Back",
-                            tint = OnSurfaceDark
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },

@@ -41,6 +41,8 @@ import com.example.japuraroutef.viewmodel.LoginViewModelFactory
 import com.example.japuraroutef.viewmodel.RegistrationViewModel
 import com.example.japuraroutef.viewmodel.RegistrationViewModelFactory
 import com.example.japuraroutef.viewmodel.GpaViewModelFactory
+import com.example.japuraroutef.ui.PlaceScreen
+import com.example.japuraroutef.ui.PlaceDetailScreen
 
 class MainActivity : ComponentActivity() {
     private lateinit var themePreferences: ThemePreferences
@@ -183,6 +185,7 @@ class MainActivity : ComponentActivity() {
                 onNavigateToMap = { currentScreen = Screen.Map },
                 onNavigateToSchedule = { currentScreen = Screen.ClassSchedule },
                 onNavigateToGrades = { currentScreen = Screen.GpaOverview },
+                onNavigateToPlaces = { currentScreen = Screen.Places },
                 onLogout = {
                     // Clear authentication data
                     tokenManager.clearAuth()
@@ -200,6 +203,19 @@ class MainActivity : ComponentActivity() {
             Screen.ClassSchedule -> ClassScheduleScreen(
                 onNavigateBack = { currentScreen = Screen.Home }
             )
+
+            Screen.Places -> PlaceScreen(
+                onNavigateBack = { currentScreen = Screen.Home },
+                onPlaceClick = { placeId -> currentScreen = Screen.PlaceDetail(placeId) }
+            )
+
+            is Screen.PlaceDetail -> {
+                val screen = currentScreen as Screen.PlaceDetail
+                PlaceDetailScreen(
+                    placeId = screen.placeId,
+                    onNavigateBack = { currentScreen = Screen.Places }
+                )
+            }
 
             Screen.GpaOverview -> {
                 sharedGpaViewModel?.let { viewModel ->
@@ -249,6 +265,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private sealed class Screen {
+        data object Places : Screen()
+        data class PlaceDetail(val placeId: String) : Screen()
         data object Splash : Screen()
         data object GetStarted : Screen()
         data object Login : Screen()
