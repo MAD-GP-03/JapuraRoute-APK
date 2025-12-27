@@ -32,6 +32,7 @@ import java.util.*
 fun PlaceDetailScreen(
     placeId: String,
     onNavigateBack: () -> Unit = {},
+    onNavigateToMap: (String) -> Unit = {},
     viewModel: PlaceViewModel = viewModel()
 ) {
     val uiState by viewModel.placeDetailUiState.collectAsState()
@@ -64,7 +65,8 @@ fun PlaceDetailScreen(
                 uiState.place != null -> {
                     PlaceDetailContent(
                         place = uiState.place!!,
-                        onNavigateBack = onNavigateBack
+                        onNavigateBack = onNavigateBack,
+                        onNavigateToMap = onNavigateToMap
                     )
                 }
                 uiState.error != null -> {
@@ -82,7 +84,8 @@ fun PlaceDetailScreen(
 @Composable
 private fun PlaceDetailContent(
     place: PlaceResponseDto,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToMap: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -263,13 +266,13 @@ private fun PlaceDetailContent(
                     ActionButton(
                         icon = Icons.Default.Directions,
                         label = "Route",
-                        onClick = { /* TODO */ },
+                        onClick = { place.id?.let { onNavigateToMap(it) } },
                         isPrimary = true
                     )
                     ActionButton(
-                        icon = Icons.Default.Call,
-                        label = "Call",
-                        onClick = { /* TODO */ }
+                        icon = Icons.Default.Map,
+                        label = "View on Map",
+                        onClick = { place.id?.let { onNavigateToMap(it) } }
                     )
                     ActionButton(
                         icon = Icons.Default.Language,

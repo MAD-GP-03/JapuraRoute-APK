@@ -197,8 +197,22 @@ class MainActivity : ComponentActivity() {
             )
 
             Screen.Map -> MapScreen(
-                onNavigateBack = { currentScreen = Screen.Home }
+                onNavigateBack = { currentScreen = Screen.Home },
+                onNavigateToPlaceDetail = { placeId ->
+                    currentScreen = Screen.PlaceDetail(placeId)
+                }
             )
+
+            is Screen.MapWithPlace -> {
+                val screen = currentScreen as Screen.MapWithPlace
+                MapScreen(
+                    onNavigateBack = { currentScreen = Screen.Home },
+                    onNavigateToPlaceDetail = { placeId ->
+                        currentScreen = Screen.PlaceDetail(placeId)
+                    },
+                    initialPlaceId = screen.placeId
+                )
+            }
 
             Screen.ClassSchedule -> ClassScheduleScreen(
                 onNavigateBack = { currentScreen = Screen.Home }
@@ -213,7 +227,10 @@ class MainActivity : ComponentActivity() {
                 val screen = currentScreen as Screen.PlaceDetail
                 PlaceDetailScreen(
                     placeId = screen.placeId,
-                    onNavigateBack = { currentScreen = Screen.Places }
+                    onNavigateBack = { currentScreen = Screen.Places },
+                    onNavigateToMap = { placeId ->
+                        currentScreen = Screen.MapWithPlace(placeId)
+                    }
                 )
             }
 
@@ -273,6 +290,7 @@ class MainActivity : ComponentActivity() {
         data object Registration : Screen()
         data object Home : Screen()
         data object Map : Screen()
+        data class MapWithPlace(val placeId: String) : Screen()
         data object ClassSchedule : Screen()
         data object GpaOverview : Screen()
         data object GpaStatistics : Screen()
